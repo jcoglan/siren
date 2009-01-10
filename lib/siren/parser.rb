@@ -56,7 +56,7 @@ module Siren
     
     def next!(c = nil)
       # If a c parameter is provided, verify that it matches the current character.
-      error! "Expected '#{c}' instead of '#{ch}'" if c && c != @ch
+      error! "Expected '#{c}' instead of '#{@ch}'" if c && c != @ch
       
       # Get the next character. When there are no more characters,
       # return the empty string.
@@ -151,7 +151,7 @@ module Siren
           %w(n u l l).each { |c| next!(c) }
           return nil
       end
-      error! "Unexpected '#{chr}'"
+      error! "Unexpected '#{@ch}'"
     end
     
     # Parse an array value.
