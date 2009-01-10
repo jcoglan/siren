@@ -1,5 +1,5 @@
 class Person
-  include Siren::Node
+  extend Siren::Node
   
   attr_reader :cars
   

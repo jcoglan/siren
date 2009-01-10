@@ -1,20 +1,17 @@
 module Siren
   module Node
     
-    module ClassMethods
-      def from_json(hash)
-        object = self.new
-        hash.each do |key, value|
-          object.instance_variable_set("@#{key}", value)
-        end
-        object
+    def from_json(hash)
+      object = self.new
+      hash.each do |key, value|
+        object.instance_variable_set("@#{key}", value)
       end
+      object
     end
     
     @classes = {}
     
-    def self.included(base)
-      base.class_eval { extend ClassMethods }
+    def self.extended(base)
       @classes[base.name.split('::').last] = base
     end
     

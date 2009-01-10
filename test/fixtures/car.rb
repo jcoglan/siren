@@ -1,5 +1,5 @@
 class Car
-  include Siren::Node
+  extend Siren::Node
   
   attr_reader :brand
   
