@@ -143,16 +143,16 @@ module Siren
     # true, false, undefined or null.
     def word!
       case @ch
-        when 't':
+        when 't'
           %w(t r u e).each { |c| next!(c) }
           return true
-        when 'f':
+        when 'f'
           %w(f a l s e).each { |c| next!(c) }
           return false
-        when 'u':
+        when 'u'
           %w(u n d e f i n e d).each { |c| next!(c) }
           return nil
-        when 'n':
+        when 'n'
           %w(n u l l).each { |c| next!(c) }
           return nil
       end
@@ -218,10 +218,10 @@ module Siren
     def value!
       white!
       case @ch
-        when '{':  object!
-        when '[':  array!
-        when '"':  string!
-        when '-':  number!
+        when '{' then object!
+        when '[' then array!
+        when '"' then string!
+        when '-' then number!
         else       @ch >= '0' && @ch <= '9' ? number! : word!
       end
     end
