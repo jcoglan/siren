@@ -8,7 +8,8 @@ Dir[$dir + '/fixtures/**/*.rb'].each { |fixture| require fixture }
 class SirenTest < Test::Unit::TestCase
   
   def fixtures(name)
-    Siren.parse(File.read("#{$dir}/fixtures/#{name}.json"))
+    @fixtures ||= {}
+    @fixtures[name.to_sym] ||= Siren.parse(File.read("#{$dir}/fixtures/#{name}.json"))
   end
   
   def test_parser
@@ -49,7 +50,7 @@ class SirenTest < Test::Unit::TestCase
   end
   
   def test_referencing
-    person = fixtures(:refs)["people"].first
+    person = fixtures(:refs).first
     assert person.equal?(person["favourite"])
   end
   

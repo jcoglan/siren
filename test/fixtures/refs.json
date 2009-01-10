@@ -1,9 +1,7 @@
-{
-    "people": [
-        {
-            "id":   "mike",
-            "favourite":  {"$ref": "mike"}
-        }
-    ]
-}
+[
+    {
+        "id":   "mike",
+        "favourite":  {"$ref": "mike"}
+    }
+]
 
