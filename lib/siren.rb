@@ -1,4 +1,4 @@
-%w(parser).each do |path|
+%w(parser node).each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
 end
 
@@ -7,7 +7,13 @@ module Siren
   
   def self.parse(string, &block)
     @parser ||= Parser.new
-    @parser.parse(string, &block)
+    result = @parser.parse(string, &block)
+    
+    @parser.walk(result) do |holder, key, value|
+      Hash === value ? Node.from_json(value) : value
+    end
+    
+    result
   end
 end
 

@@ -1,5 +1,9 @@
-require File.dirname(__FILE__) + '/../lib/siren'
+$dir = File.dirname(__FILE__)
+
+require $dir + '/../lib/siren'
 require 'test/unit'
+
+Dir[$dir + '/fixtures/**/*.rb'].each { |fixture| require fixture }
 
 class SirenTest < Test::Unit::TestCase
   
@@ -32,6 +36,15 @@ class SirenTest < Test::Unit::TestCase
     end
     
     assert_equal( {"list" => [1,3,5,[56,35],8,10,12]}, value )
+  end
+  
+  def test_casting
+    mike = Person.new('ford')
+    bob = Person.new('bentley', 'ferrari', 'zonda')
+    
+    data = Siren.parse(File.read($dir + '/fixtures/people.json'))
+    
+    assert_equal( {"people" => [mike, bob]}, data )
   end
   
 end

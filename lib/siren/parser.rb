@@ -24,18 +24,23 @@ module Siren
       white!
       error! "Syntax error" if @ch
       
-      # If there is a reviver function, we recursively walk the new structure,
-      # passing each name/value pair to the reviver function for possible
-      # transformation, starting with a temporary root object that holds the result
-      # in an empty key. If there is not a reviver function, we simply return the
-      # result.
-      return result unless block_given?
+      walk(result, &reviver)
+    end
+    
+    # If there is a reviver function, we recursively walk the new structure,
+    # passing each name/value pair to the reviver function for possible
+    # transformation, starting with a temporary root object that holds the result
+    # in an empty key. If there is not a reviver function, we simply return the
+    # result.
+    def walk(data, &reviver)
+      data = parse(data) if String === data
+      return data unless block_given?
       
-      walk = lambda do |holder, key|
+      walker = lambda do |holder, key|
         value = holder[key]
         
         for_each = lambda do |k, val|
-          v = walk.call(value, k)
+          v = walker.call(value, k)
           if v.nil?
             holder.delete(k)
           else
@@ -49,7 +54,7 @@ module Siren
         reviver.call(holder, key, value)
       end
       
-      walk.call({"" => result}, "")
+      walker.call({"" => data}, "")
     end
     
   private

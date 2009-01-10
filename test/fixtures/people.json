@@ -1,0 +1,34 @@
+{
+    "people": [
+        {
+            "type":   "person",
+            "cars": [
+                {
+                    "type":   "car",
+                    "brand":  "ford"
+                }
+            ]
+        },
+        
+        {
+            "type":   "person",
+            "cars": [
+                {
+                    "type":   "Car",
+                    "brand":  "ferrari"
+                },
+                
+                {
+                    "type":   "car",
+                    "brand":  "bentley"
+                },
+                
+                {
+                    "type":   "car",
+                    "brand":  "zonda"
+                }
+            ]
+        }
+    ]
+}
+
