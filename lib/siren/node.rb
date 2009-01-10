@@ -17,8 +17,8 @@ module Siren
     
     def self.from_json(hash)
       hash = Siren.parse(hash) if String === hash
-      return hash unless Hash === hash && hash["type"]
-      klass = find_class(hash["type"])
+      return hash unless Hash === hash && hash[TYPE_FIELD]
+      klass = find_class(hash[TYPE_FIELD])
       klass ? klass.from_json(hash) : hash
     end
     

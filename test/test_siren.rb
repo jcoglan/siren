@@ -7,6 +7,10 @@ Dir[$dir + '/fixtures/**/*.rb'].each { |fixture| require fixture }
 
 class SirenTest < Test::Unit::TestCase
   
+  def fixtures(name)
+    Siren.parse(File.read("#{$dir}/fixtures/#{name}.json"))
+  end
+  
   def test_parser
     
     assert_equal(
@@ -41,10 +45,12 @@ class SirenTest < Test::Unit::TestCase
   def test_casting
     mike = Person.new('ford')
     bob = Person.new('bentley', 'ferrari', 'zonda')
-    
-    data = Siren.parse(File.read($dir + '/fixtures/people.json'))
-    
-    assert_equal( {"people" => [mike, bob]}, data )
+    assert_equal( {"people" => [mike, bob]}, fixtures(:people) )
+  end
+  
+  def test_referencing
+    person = fixtures(:refs)["people"].first
+    assert person.equal?(person["favourite"])
   end
   
 end

@@ -1,0 +1,9 @@
+{
+    "people": [
+        {
+            "id":   "mike",
+            "favourite":  {"$ref": "mike"}
+        }
+    ]
+}
+
