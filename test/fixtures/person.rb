@@ -1,7 +1,7 @@
 class Person
   extend Siren::Node
   
-  attr_reader :cars
+  attr_reader :cars, :favourite
   
   def initialize(*cars)
     @cars = cars.map { |brand| Car.new(brand) }

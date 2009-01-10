@@ -2,6 +2,24 @@
     {
         "id":   "mike",
         "favourite":  {"$ref": "mike"}
+    },
+    
+    {
+        "type": "person",
+        "id":   "bob",
+        "favourite":  {"$ref": "bob"}
+    },
+    
+    {
+        "type": "person",
+        "id":   "romeo",
+        "favourite":  {"$ref": "juliet"}
+    },
+    
+    {
+        "type": "person",
+        "id":   "juliet",
+        "favourite":  {"$ref": "romeo"}
     }
 ]
 

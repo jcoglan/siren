@@ -52,6 +52,12 @@ class SirenTest < Test::Unit::TestCase
   def test_referencing
     person = fixtures(:refs).first
     assert person.equal?(person["favourite"])
+    person = fixtures(:refs)[1]
+    assert person.equal?(person.favourite)
+    
+    romeo, juliet = fixtures(:refs)[2..3]
+    assert romeo.equal?(juliet.favourite)
+    assert juliet.equal?(romeo.favourite)
   end
   
 end

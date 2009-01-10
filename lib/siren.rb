@@ -1,4 +1,4 @@
-%w(parser node reference).each do |path|
+%w(parser node reference observer).each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
 end
 
@@ -11,21 +11,27 @@ module Siren
   
   def self.parse(string, &block)
     @parser ||= Parser.new
+    Reference.flush!
     identified = {}
     
     result = @parser.parse(string) do |holder, key, value|
-      if Hash === value
-        identified[value[ID_FIELD]] = value
-        value = Reference.new(value) if value[REF_FIELD]
+      if Hash === value && value[REF_FIELD]
+        value = Reference.new(value) { |target| holder[key] = target }
       end
-      block ? block.call(holder, key, value) : value
+      value
     end
     
     @parser.walk(result) do |holder, key, value|
-      value = value.resolve(identified) if Reference === value
-      value = Node.from_json(value) if Hash === value
+      if Hash === value
+        id = value[ID_FIELD]
+        value = Node.from_json(value)
+        identified[id] = value
+      end
       value
     end
+    
+    Reference.resolve!(identified)
+    @parser.walk(result, &block) if block_given?
     
     result
   end

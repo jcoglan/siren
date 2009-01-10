@@ -5,6 +5,11 @@ module Siren
       object = self.new
       hash.each do |key, value|
         object.instance_variable_set("@#{key}", value)
+        if Reference === value
+          value.add_observer(Observer.new { |target|
+            object.instance_variable_set("@#{key}", target)
+          })
+        end
       end
       object
     end
