@@ -74,6 +74,9 @@ class SirenTest < Test::Unit::TestCase
     
     assert_equal 2, Siren.query("$.data[? $.value != @]",
         {"value" => "foo", "data" => %w(bar foo baz)}).size
+    
+    Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
+    assert_equal 'jcoglan', Siren.query("whizz.name", {})
   end
 end
 

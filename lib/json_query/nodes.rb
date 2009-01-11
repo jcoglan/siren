@@ -32,7 +32,7 @@ module JsonQuery
   
   class Symbol < Treetop::Runtime::SyntaxNode
     def value(root, symbols)
-      text_value
+      symbols[text_value]
     end
   end
   
@@ -42,8 +42,8 @@ module JsonQuery
   module FieldAccess
     def index(root, symbols)
       element = elements[1]
-      element = element.elements[1] if respond_to?(:expression)
-      element.value(root, symbols)
+      return element.text_value if respond_to?(:symbol)
+      element.elements[1].value(root, symbols)
     end
     
     def value(object, root, symbols)
