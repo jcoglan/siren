@@ -299,7 +299,7 @@ module JsonQuery
       s6 << r7
       if r7
         i8 = index
-        r9 = _nt_expression
+        r9 = _nt_field_access_expression
         if r9
           r8 = r9
         else
@@ -340,6 +340,78 @@ module JsonQuery
     end
 
     node_cache[:field_access][start_index] = r0
+
+    return r0
+  end
+
+  module FieldAccessExpression0
+    def expression
+      elements[1]
+    end
+  end
+
+  module FieldAccessExpression1
+    def first
+      elements[0]
+    end
+
+    def others
+      elements[1]
+    end
+  end
+
+  def _nt_field_access_expression
+    start_index = index
+    if node_cache[:field_access_expression].has_key?(index)
+      cached = node_cache[:field_access_expression][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0, s0 = index, []
+    r1 = _nt_expression
+    s0 << r1
+    if r1
+      s2, i2 = [], index
+      loop do
+        i3, s3 = index, []
+        if input.index(",", index) == index
+          r4 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure(",")
+          r4 = nil
+        end
+        s3 << r4
+        if r4
+          r5 = _nt_expression
+          s3 << r5
+        end
+        if s3.last
+          r3 = (SyntaxNode).new(input, i3...index, s3)
+          r3.extend(FieldAccessExpression0)
+        else
+          self.index = i3
+          r3 = nil
+        end
+        if r3
+          s2 << r3
+        else
+          break
+        end
+      end
+      r2 = SyntaxNode.new(input, i2...index, s2)
+      s0 << r2
+    end
+    if s0.last
+      r0 = (FieldAccessExpression).new(input, i0...index, s0)
+      r0.extend(FieldAccessExpression1)
+    else
+      self.index = i0
+      r0 = nil
+    end
+
+    node_cache[:field_access_expression][start_index] = r0
 
     return r0
   end

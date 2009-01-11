@@ -96,6 +96,9 @@ class SirenTest < Test::Unit::TestCase
     
     assert_equal "The Lord of the Rings",
         Siren.query("$.store.book[@.length - 1]", fixtures(:store))["title"]
+    
+    assert_equal ["Sayings of the Century", "The Lord of the Rings"],
+        Siren.query("$.store.book[0,3]", fixtures(:store)).map { |b| b["title"] }
   end
 end
 

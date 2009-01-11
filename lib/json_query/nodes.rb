@@ -38,13 +38,18 @@ module JsonQuery
   module FieldAccess
     def index(object, root, symbols, current = nil)
       element = elements[1]
-      return element.text_value if Symbol === element
+      return [element.text_value] if Symbol === element
       element.value(root, symbols, object)
     end
     
     def value(object, root, symbols, current = nil)
-      index = index(object, root, symbols, current)
-      
+      indexes = index(object, root, symbols, current)
+      indexes.size == 1 ?
+          access(object, indexes.first) :
+          indexes.map { |i| access(object, i) }
+    end
+    
+    def access(object, index)
       return (Hash === object ? object.values : object) if index == :*
       return object[index] if Array === object and Numeric === index
       
@@ -58,9 +63,16 @@ module JsonQuery
     end
   end
   
+  class FieldAccessExpression < Treetop::Runtime::SyntaxNode
+    def value(root, symbols, current = nil)
+      exprs = [first] + others.elements.map { |e| e.expression }
+      exprs.map { |e| e.value(root, symbols, current) }
+    end
+  end
+  
   class AllFilter < Treetop::Runtime::SyntaxNode
     def value(root, symbols, current = nil)
-      :*
+      [:*]
     end
   end
   
