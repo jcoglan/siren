@@ -232,8 +232,14 @@ module JsonQuery
           r0 = r3
           r0.extend(Filter)
         else
-          self.index = i0
-          r0 = nil
+          r4 = _nt_sort_filter
+          if r4
+            r0 = r4
+            r0.extend(Filter)
+          else
+            self.index = i0
+            r0 = nil
+          end
         end
       end
     end
@@ -541,6 +547,131 @@ module JsonQuery
     end
 
     node_cache[:map_filter][start_index] = r0
+
+    return r0
+  end
+
+  module SortFilter0
+    def sorter
+      elements[1]
+    end
+
+    def expression
+      elements[2]
+    end
+
+  end
+
+  def _nt_sort_filter
+    start_index = index
+    if node_cache[:sort_filter].has_key?(index)
+      cached = node_cache[:sort_filter][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0, s0 = index, []
+    if input.index("[", index) == index
+      r1 = (SyntaxNode).new(input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure("[")
+      r1 = nil
+    end
+    s0 << r1
+    if r1
+      r2 = _nt_sorter
+      s0 << r2
+      if r2
+        r3 = _nt_expression
+        s0 << r3
+        if r3
+          if input.index("]", index) == index
+            r4 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure("]")
+            r4 = nil
+          end
+          s0 << r4
+        end
+      end
+    end
+    if s0.last
+      r0 = (SortFilter).new(input, i0...index, s0)
+      r0.extend(SortFilter0)
+    else
+      self.index = i0
+      r0 = nil
+    end
+
+    node_cache[:sort_filter][start_index] = r0
+
+    return r0
+  end
+
+  module Sorter0
+    def space
+      elements[0]
+    end
+
+    def space
+      elements[2]
+    end
+  end
+
+  def _nt_sorter
+    start_index = index
+    if node_cache[:sorter].has_key?(index)
+      cached = node_cache[:sorter][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0, s0 = index, []
+    r1 = _nt_space
+    s0 << r1
+    if r1
+      i2 = index
+      if input.index("/", index) == index
+        r3 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("/")
+        r3 = nil
+      end
+      if r3
+        r2 = r3
+      else
+        if input.index("\\", index) == index
+          r4 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure("\\")
+          r4 = nil
+        end
+        if r4
+          r2 = r4
+        else
+          self.index = i2
+          r2 = nil
+        end
+      end
+      s0 << r2
+      if r2
+        r5 = _nt_space
+        s0 << r5
+      end
+    end
+    if s0.last
+      r0 = (Sorter).new(input, i0...index, s0)
+      r0.extend(Sorter0)
+    else
+      self.index = i0
+      r0 = nil
+    end
+
+    node_cache[:sorter][start_index] = r0
 
     return r0
   end
