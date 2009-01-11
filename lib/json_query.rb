@@ -170,7 +170,7 @@ module JsonQuery
     end
 
     i0, s0 = index, []
-    if input.index(Regexp.new('[a-z$_]'), index) == index
+    if input.index(Regexp.new('[A-Za-z$_]'), index) == index
       r1 = (SyntaxNode).new(input, index...(index + 1))
       @index += 1
     else
@@ -180,7 +180,7 @@ module JsonQuery
     if r1
       s2, i2 = [], index
       loop do
-        if input.index(Regexp.new('[a-z0-9$_]'), index) == index
+        if input.index(Regexp.new('[A-Za-z0-9$_]'), index) == index
           r3 = (SyntaxNode).new(input, index...(index + 1))
           @index += 1
         else

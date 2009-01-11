@@ -20,7 +20,7 @@ grammar JsonQuery
   end
   
   rule symbol
-    [a-z$_] [a-z0-9$_]* <Symbol>
+    [A-Za-z$_] [A-Za-z0-9$_]* <Symbol>
   end
   
   rule filter
