@@ -449,7 +449,7 @@ module Json
 
   module String3
     def value
-      text_value[1...-1]
+      eval(text_value)
     end
   end
 
@@ -683,7 +683,7 @@ module Json
 
   module Number4
     def value
-      text_value.to_f
+      eval(text_value)
     end
   end
 

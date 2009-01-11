@@ -35,6 +35,8 @@ class SirenTest < Test::Unit::TestCase
     assert_equal( {}, Siren.parse("{}") )
     assert_equal( [], Siren.parse("[]") )
     assert_equal( nil, Siren.parse("undefined") )
+    
+    assert_equal( 'something "funny"', Siren.parse('{"key": "something \\"funny\\""}')["key"] )
   end
   
   def test_parser_with_callback

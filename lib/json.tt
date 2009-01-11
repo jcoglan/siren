@@ -38,7 +38,7 @@ grammar Json
   rule string
     '"' ('\\' ('"' / '\\' / '/' / 'b' / 'f' / 'n' / 'r' / 't' / 'u' hex hex hex hex) / [^\"\\])* '"' {
       def value
-        text_value[1...-1]
+        eval(text_value)
       end
     }
   end
@@ -46,7 +46,7 @@ grammar Json
   rule number
     "-"? ("0" / [1-9] digit*) ("." digit+)? ([eE] [+-]? digit+)? {
       def value
-        text_value.to_f
+        eval(text_value)
       end
     }
   end
