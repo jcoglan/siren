@@ -4,6 +4,9 @@ README.txt
 Rakefile
 bin/siren
 lib/siren.rb
+lib/json.tt
+lib/json.rb
+lib/siren/walker.rb
 lib/siren/parser.rb
 lib/siren/node.rb
 lib/siren/reference.rb

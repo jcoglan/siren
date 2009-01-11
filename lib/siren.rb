@@ -1,5 +1,12 @@
-%w(parser node reference observer).each do |path|
+require 'rubygems'
+require 'treetop'
+
+%w(walker parser node reference observer ../json).each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
+end
+
+class JsonParser
+  include Siren::Walker
 end
 
 module Siren
@@ -10,11 +17,13 @@ module Siren
   REF_FIELD  = "$ref"
   
   def self.parse(string, &block)
-    @parser ||= Parser.new
+    @parser ||= JsonParser.new
     Reference.flush!
     identified = {}
     
-    result = @parser.parse(string) do |holder, key, value|
+    result = @parser.parse(string).value rescue nil
+    
+    @parser.walk(result) do |holder, key, value|
       if Hash === value && value[REF_FIELD]
         value = Reference.new(value) { |target| holder[key] = target }
       end

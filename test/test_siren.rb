@@ -5,6 +5,8 @@ require 'test/unit'
 
 Dir[$dir + '/fixtures/**/*.rb'].each { |fixture| require fixture }
 
+$VERBOSE = nil
+
 class SirenTest < Test::Unit::TestCase
   
   def fixtures(name)
