@@ -120,9 +120,6 @@ module Siren
           return true
         when 'f'
           %w(f a l s e).each { |c| next!(c) }
-          return false
-        when 'u'
-          %w(u n d e f i n e d).each { |c| next!(c) }
           return nil
         when 'n'
           %w(n u l l).each { |c| next!(c) }
