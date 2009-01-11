@@ -378,14 +378,166 @@ module JsonQuery
     return r0
   end
 
-  module BooleanExpression0
+  def _nt_boolean_expression
+    start_index = index
+    if node_cache[:boolean_expression].has_key?(index)
+      cached = node_cache[:boolean_expression][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    r1 = _nt_or_expression
+    if r1
+      r0 = r1
+    else
+      r2 = _nt_and_expression
+      if r2
+        r0 = r2
+      else
+        r3 = _nt_boolean_atom
+        if r3
+          r0 = r3
+        else
+          self.index = i0
+          r0 = nil
+        end
+      end
+    end
+
+    node_cache[:boolean_expression][start_index] = r0
+
+    return r0
+  end
+
+  module OrExpression0
+    def first
+      elements[0]
+    end
+
+    def second
+      elements[2]
+    end
+  end
+
+  def _nt_or_expression
+    start_index = index
+    if node_cache[:or_expression].has_key?(index)
+      cached = node_cache[:or_expression][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    i1, s1 = index, []
+    r2 = _nt_and_expression
+    s1 << r2
+    if r2
+      if input.index("|", index) == index
+        r3 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("|")
+        r3 = nil
+      end
+      s1 << r3
+      if r3
+        r4 = _nt_or_expression
+        s1 << r4
+      end
+    end
+    if s1.last
+      r1 = (Or).new(input, i1...index, s1)
+      r1.extend(OrExpression0)
+    else
+      self.index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      r5 = _nt_and_expression
+      if r5
+        r0 = r5
+      else
+        self.index = i0
+        r0 = nil
+      end
+    end
+
+    node_cache[:or_expression][start_index] = r0
+
+    return r0
+  end
+
+  module AndExpression0
+    def first
+      elements[0]
+    end
+
+    def second
+      elements[2]
+    end
+  end
+
+  def _nt_and_expression
+    start_index = index
+    if node_cache[:and_expression].has_key?(index)
+      cached = node_cache[:and_expression][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    i1, s1 = index, []
+    r2 = _nt_boolean_atom
+    s1 << r2
+    if r2
+      if input.index("&", index) == index
+        r3 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("&")
+        r3 = nil
+      end
+      s1 << r3
+      if r3
+        r4 = _nt_and_expression
+        s1 << r4
+      end
+    end
+    if s1.last
+      r1 = (And).new(input, i1...index, s1)
+      r1.extend(AndExpression0)
+    else
+      self.index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      r5 = _nt_boolean_atom
+      if r5
+        r0 = r5
+      else
+        self.index = i0
+        r0 = nil
+      end
+    end
+
+    node_cache[:and_expression][start_index] = r0
+
+    return r0
+  end
+
+  module BooleanAtom0
     def boolean_expression
       elements[1]
     end
 
   end
 
-  module BooleanExpression1
+  module BooleanAtom1
     def first
       elements[0]
     end
@@ -399,77 +551,102 @@ module JsonQuery
     end
   end
 
-  def _nt_boolean_expression
+  module BooleanAtom2
+    def space
+      elements[0]
+    end
+
+    def space
+      elements[2]
+    end
+  end
+
+  def _nt_boolean_atom
     start_index = index
-    if node_cache[:boolean_expression].has_key?(index)
-      cached = node_cache[:boolean_expression][index]
+    if node_cache[:boolean_atom].has_key?(index)
+      cached = node_cache[:boolean_atom][index]
       @index = cached.interval.end if cached
       return cached
     end
 
-    i0 = index
-    i1, s1 = index, []
-    if input.index("(", index) == index
-      r2 = (SyntaxNode).new(input, index...(index + 1))
-      @index += 1
-    else
-      terminal_parse_failure("(")
-      r2 = nil
-    end
-    s1 << r2
-    if r2
-      r3 = _nt_boolean_expression
-      s1 << r3
-      if r3
-        if input.index(")", index) == index
-          r4 = (SyntaxNode).new(input, index...(index + 1))
-          @index += 1
-        else
-          terminal_parse_failure(")")
-          r4 = nil
-        end
-        s1 << r4
-      end
-    end
-    if s1.last
-      r1 = (SyntaxNode).new(input, i1...index, s1)
-      r1.extend(BooleanExpression0)
-    else
-      self.index = i1
-      r1 = nil
-    end
+    i0, s0 = index, []
+    r1 = _nt_space
+    s0 << r1
     if r1
-      r0 = r1
-      r0.extend(BooleanExpression)
-    else
-      i5, s5 = index, []
-      r6 = _nt_expression
-      s5 << r6
-      if r6
-        r7 = _nt_comparator
-        s5 << r7
-        if r7
-          r8 = _nt_expression
-          s5 << r8
+      i2 = index
+      i3, s3 = index, []
+      if input.index("(", index) == index
+        r4 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("(")
+        r4 = nil
+      end
+      s3 << r4
+      if r4
+        r5 = _nt_boolean_expression
+        s3 << r5
+        if r5
+          if input.index(")", index) == index
+            r6 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure(")")
+            r6 = nil
+          end
+          s3 << r6
         end
       end
-      if s5.last
-        r5 = (SyntaxNode).new(input, i5...index, s5)
-        r5.extend(BooleanExpression1)
+      if s3.last
+        r3 = (SyntaxNode).new(input, i3...index, s3)
+        r3.extend(BooleanAtom0)
       else
-        self.index = i5
-        r5 = nil
+        self.index = i3
+        r3 = nil
       end
-      if r5
-        r0 = r5
-        r0.extend(BooleanExpression)
+      if r3
+        r2 = r3
       else
-        self.index = i0
-        r0 = nil
+        i7, s7 = index, []
+        r8 = _nt_expression
+        s7 << r8
+        if r8
+          r9 = _nt_comparator
+          s7 << r9
+          if r9
+            r10 = _nt_expression
+            s7 << r10
+          end
+        end
+        if s7.last
+          r7 = (SyntaxNode).new(input, i7...index, s7)
+          r7.extend(BooleanAtom1)
+        else
+          self.index = i7
+          r7 = nil
+        end
+        if r7
+          r2 = r7
+        else
+          self.index = i2
+          r2 = nil
+        end
       end
+      s0 << r2
+      if r2
+        r11 = _nt_space
+        s0 << r11
+      end
+    end
+    if s0.last
+      r0 = (BooleanAtom).new(input, i0...index, s0)
+      r0.extend(BooleanAtom2)
+    else
+      self.index = i0
+      r0 = nil
     end
 
-    node_cache[:boolean_expression][start_index] = r0
+    node_cache[:boolean_atom][start_index] = r0
 
     return r0
   end

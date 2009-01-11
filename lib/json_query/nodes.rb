@@ -11,7 +11,7 @@ module JsonQuery
     end
     
     def filters
-      @filters ||= elements[1].elements
+      elements[1].elements
     end
   end
   
@@ -69,10 +69,35 @@ module JsonQuery
     end
   end
   
-  module BooleanExpression
+  class And < Treetop::Runtime::SyntaxNode
     def value(root, symbols)
-      return boolean_expression.value(root, symbols) if respond_to?(:boolean_expression)
+      first.value(root, symbols) && second.value(root, symbols)
+    end
+  end
+  
+  class Or < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      first.value(root, symbols) || second.value(root, symbols)
+    end
+  end
+  
+  class BooleanAtom < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      element = elements[1]
+      return element.boolean_expression.value(root, symbols) if element.respond_to?(:boolean_expression)
       comparator.value(first.value(root, symbols), second.value(root, symbols))
+    end
+    
+    def comparator
+      elements[1].comparator
+    end
+    
+    def first
+      elements[1].first
+    end
+    
+    def second
+      elements[1].second
     end
   end
   

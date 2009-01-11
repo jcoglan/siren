@@ -36,7 +36,19 @@ grammar JsonQuery
   end
   
   rule boolean_expression
-    ("(" boolean_expression ")" / first:expression comparator second:expression) <BooleanExpression>
+    or_expression / and_expression / boolean_atom
+  end
+  
+  rule or_expression
+    first:and_expression "|" second:or_expression <Or> / and_expression
+  end
+  
+  rule and_expression
+    first:boolean_atom "&" second:and_expression <And> / boolean_atom
+  end
+  
+  rule boolean_atom
+    space ("(" boolean_expression ")" / first:expression comparator second:expression) space <BooleanAtom>
   end
   
   rule additive
