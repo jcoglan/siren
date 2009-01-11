@@ -135,7 +135,9 @@ module JsonQuery
   
   class Addition < Treetop::Runtime::SyntaxNode
     def value(expr1, expr2)
-      expr1 + expr2
+      String === expr1 || String === expr2 ?
+          expr1.to_s + expr2.to_s :
+          expr1 + expr2
     end
   end
   
