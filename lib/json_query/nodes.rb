@@ -42,19 +42,29 @@ module JsonQuery
   module FieldAccess
     def index(root, symbols)
       element = elements[1]
-      return element.text_value if respond_to?(:symbol)
-      element.elements[1].value(root, symbols)
+      return element.text_value if Symbol === element
+      element.value(root, symbols)
     end
     
     def value(object, root, symbols)
       index = index(root, symbols)
+      
+      return Hash === object ? object.values : object if index == :*
       return object[index] if Array === object
+      
       if Hash === object
         key = [index, index.to_s, index.to_sym].find { |i| object.has_key?(i) }
         return object[key] if key
       end
+      
       return object.__send__(index) if object.respond_to?(index)
       object.instance_variable_get("@#{ index }")
+    end
+  end
+  
+  class AllFilter < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      :*
     end
   end
   

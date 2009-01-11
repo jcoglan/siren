@@ -238,16 +238,9 @@ module JsonQuery
   end
 
   module FieldAccess0
-    def symbol
-      elements[1]
-    end
   end
 
   module FieldAccess1
-    def expression
-      elements[1]
-    end
-
   end
 
   def _nt_field_access
@@ -269,7 +262,19 @@ module JsonQuery
     end
     s1 << r2
     if r2
-      r3 = _nt_symbol
+      i3 = index
+      r4 = _nt_symbol
+      if r4
+        r3 = r4
+      else
+        r5 = _nt_all
+        if r5
+          r3 = r5
+        else
+          self.index = i3
+          r3 = nil
+        end
+      end
       s1 << r3
     end
     if s1.last
@@ -283,38 +288,50 @@ module JsonQuery
       r0 = r1
       r0.extend(FieldAccess)
     else
-      i4, s4 = index, []
+      i6, s6 = index, []
       if input.index("[", index) == index
-        r5 = (SyntaxNode).new(input, index...(index + 1))
+        r7 = (SyntaxNode).new(input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("[")
-        r5 = nil
+        r7 = nil
       end
-      s4 << r5
-      if r5
-        r6 = _nt_expression
-        s4 << r6
-        if r6
+      s6 << r7
+      if r7
+        i8 = index
+        r9 = _nt_expression
+        if r9
+          r8 = r9
+        else
+          r10 = _nt_all
+          if r10
+            r8 = r10
+          else
+            self.index = i8
+            r8 = nil
+          end
+        end
+        s6 << r8
+        if r8
           if input.index("]", index) == index
-            r7 = (SyntaxNode).new(input, index...(index + 1))
+            r11 = (SyntaxNode).new(input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure("]")
-            r7 = nil
+            r11 = nil
           end
-          s4 << r7
+          s6 << r11
         end
       end
-      if s4.last
-        r4 = (SyntaxNode).new(input, i4...index, s4)
-        r4.extend(FieldAccess1)
+      if s6.last
+        r6 = (SyntaxNode).new(input, i6...index, s6)
+        r6.extend(FieldAccess1)
       else
-        self.index = i4
-        r4 = nil
+        self.index = i6
+        r6 = nil
       end
-      if r4
-        r0 = r4
+      if r6
+        r0 = r6
         r0.extend(FieldAccess)
       else
         self.index = i0
@@ -323,6 +340,27 @@ module JsonQuery
     end
 
     node_cache[:field_access][start_index] = r0
+
+    return r0
+  end
+
+  def _nt_all
+    start_index = index
+    if node_cache[:all].has_key?(index)
+      cached = node_cache[:all][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    if input.index("*", index) == index
+      r0 = (AllFilter).new(input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure("*")
+      r0 = nil
+    end
+
+    node_cache[:all][start_index] = r0
 
     return r0
   end

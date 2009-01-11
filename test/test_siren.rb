@@ -81,11 +81,15 @@ class SirenTest < Test::Unit::TestCase
     
     assert_equal [1,3,4,5], Siren.query("$[? @ > 2 & @ < 6 | @ = 1]", 1..9)
     
-    assert_equal 9, Siren.query("($.val - 2) + 4", {:val => 7})
+    assert_equal 9, Siren.query("$.key[? @ = ($.val - 2) + 4][0]",
+        {:key => [0,2,9,4,7], :val => 7})
     assert_equal "foobar", Siren.query("'foo' + 'bar'", {:val => 7})
     
     Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
     assert_equal 'jcoglan', Siren.query("whizz.name", {})
+    
+    assert_equal 5, Siren.query("$.store.*", fixtures(:store)).flatten.size
+    assert_equal 2, Siren.query("$.store[*]", fixtures(:store)).size
   end
 end
 

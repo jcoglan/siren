@@ -28,7 +28,11 @@ grammar JsonQuery
   end
   
   rule field_access
-    ("." symbol / "[" expression "]") <FieldAccess>
+    ("." (symbol / all) / "[" (expression / all) "]") <FieldAccess>
+  end
+  
+  rule all
+    "*" <AllFilter>
   end
   
   rule boolean_filter
