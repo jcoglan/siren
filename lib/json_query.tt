@@ -32,11 +32,11 @@ grammar JsonQuery
   end
   
   rule boolean_expression
-    "(" boolean_expression ")" / first:expression comparator second:expression <BooleanExpression>
+    ("(" boolean_expression ")" / first:expression comparator second:expression) <BooleanExpression>
   end
   
   rule expression
-    space ("(" expression ")" / (query / primitive) <Expression>) space
+    space ("(" expression ")" / query / primitive) space <Expression>
   end
   
   rule primitive

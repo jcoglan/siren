@@ -63,21 +63,19 @@ module JsonQuery
     end
   end
   
-  class BooleanExpression < Treetop::Runtime::SyntaxNode
+  module BooleanExpression
     def value(root, symbols)
-      comparator.value(first_value(root, symbols), second_value(root, symbols))
-    end
-    
-    def first_value(root, symbols)
-      first.elements[1].value(root, symbols)
-    end
-    
-    def second_value(root, symbols)
-      second.elements[1].value(root, symbols)
+      return boolean_expression.value(root, symbols) if respond_to?(:boolean_expression)
+      comparator.value(first.value(root, symbols), second.value(root, symbols))
     end
   end
   
-  module Expression
+  class Expression < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      element = elements[1]
+      return element.expression.value(root, symbols) if element.respond_to?(:expression)
+      element.value(root, symbols)
+    end
   end
   
   module Comparator

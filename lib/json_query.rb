@@ -408,6 +408,7 @@ module JsonQuery
     end
     if r1
       r0 = r1
+      r0.extend(BooleanExpression)
     else
       i5, s5 = index, []
       r6 = _nt_expression
@@ -421,7 +422,7 @@ module JsonQuery
         end
       end
       if s5.last
-        r5 = (BooleanExpression).new(input, i5...index, s5)
+        r5 = (SyntaxNode).new(input, i5...index, s5)
         r5.extend(BooleanExpression1)
       else
         self.index = i5
@@ -429,6 +430,7 @@ module JsonQuery
       end
       if r5
         r0 = r5
+        r0.extend(BooleanExpression)
       else
         self.index = i0
         r0 = nil
@@ -503,36 +505,27 @@ module JsonQuery
       if r3
         r2 = r3
       else
-        i7 = index
-        r8 = _nt_query
-        if r8
-          r7 = r8
-          r7.extend(Expression)
-        else
-          r9 = _nt_primitive
-          if r9
-            r7 = r9
-            r7.extend(Expression)
-          else
-            self.index = i7
-            r7 = nil
-          end
-        end
+        r7 = _nt_query
         if r7
           r2 = r7
         else
-          self.index = i2
-          r2 = nil
+          r8 = _nt_primitive
+          if r8
+            r2 = r8
+          else
+            self.index = i2
+            r2 = nil
+          end
         end
       end
       s0 << r2
       if r2
-        r10 = _nt_space
-        s0 << r10
+        r9 = _nt_space
+        s0 << r9
       end
     end
     if s0.last
-      r0 = (SyntaxNode).new(input, i0...index, s0)
+      r0 = (Expression).new(input, i0...index, s0)
       r0.extend(Expression1)
     else
       self.index = i0
