@@ -1,7 +1,14 @@
 module JsonQuery
   
-  class << self
-    attr_accessor :root, :current, :symbols
+  @current = nil
+  def self.current; @current; end
+  
+  def self.currently(object)
+    present = @current
+    @current = object
+    result = yield
+    @current = present
+    result
   end
   
   class Query < Treetop::Runtime::SyntaxNode
@@ -40,14 +47,14 @@ module JsonQuery
   end
   
   module FieldAccess
-    def index(root, symbols)
+    def index(object, root, symbols)
       element = elements[1]
       return element.text_value if Symbol === element
-      element.value(root, symbols)
+      JsonQuery.currently(object) { element.value(root, symbols) }
     end
     
     def value(object, root, symbols)
-      index = index(root, symbols)
+      index = index(object, root, symbols)
       
       return (Hash === object ? object.values : object) if index == :*
       return object[index] if Array === object and Numeric === index
@@ -70,12 +77,9 @@ module JsonQuery
   
   class BooleanFilter < Treetop::Runtime::SyntaxNode
     def value(list, root, symbols)
-      present, results = JsonQuery.current, list.select do |object|
-        JsonQuery.current = object
-        boolean_expression.value(root, symbols)
+      list.select do |object|
+        JsonQuery.currently(object) { boolean_expression.value(root, symbols) }
       end
-      JsonQuery.current = present
-      results
     end
   end
   

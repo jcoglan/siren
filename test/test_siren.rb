@@ -93,6 +93,9 @@ class SirenTest < Test::Unit::TestCase
     
     assert_equal [7,8], Siren.query("$.val[? @ > $.key.*.size * 2]",
         {:key => [9,5,7], :val => 1..8})
+    
+    assert_equal "The Lord of the Rings",
+        Siren.query("$.store.book[@.length - 1]", fixtures(:store))["title"]
   end
 end
 
