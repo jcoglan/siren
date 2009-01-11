@@ -103,10 +103,10 @@ class SirenTest < Test::Unit::TestCase
         Siren.query("$.store.book[0,3]", fixtures(:store)).map { |b| b["title"] }
     
     assert_equal fixtures(:store)["store"]["book"].map { |b| b["title"] },
-        Siren.query("$.store.book[= @.title ]", fixtures(:store))
+        Siren.query("$.store.book[=title ]", fixtures(:store))
     
     assert_equal fixtures(:store)["store"]["book"].map { |b| b["title"] }.sort,
-        Siren.query("$.store.book[/@.title][= @.title ]", fixtures(:store))
+        Siren.query("$.store.book[/title][= @.title ]", fixtures(:store))
   end
 end
 

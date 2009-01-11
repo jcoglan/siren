@@ -28,7 +28,7 @@ module JsonQuery
   
   class Symbol < Treetop::Runtime::SyntaxNode
     def value(root, symbols, current = nil)
-      symbols[text_value]
+      symbols[text_value] || FieldAccess.access(current, text_value)
     end
   end
   
@@ -45,11 +45,11 @@ module JsonQuery
     def value(object, root, symbols, current = nil)
       indexes = index(object, root, symbols, current)
       indexes.size == 1 ?
-          access(object, indexes.first) :
-          indexes.map { |i| access(object, i) }
+          FieldAccess.access(object, indexes.first) :
+          indexes.map { |i| FieldAccess.access(object, i) }
     end
     
-    def access(object, index)
+    def self.access(object, index)
       return (Hash === object ? object.values : object) if index == :*
       return object[index] if Array === object and Numeric === index
       
