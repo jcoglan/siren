@@ -30,7 +30,9 @@ module Siren
     
     @json_parser.walk(result) do |holder, key, value|
       if Hash === value && value[REF_FIELD]
-        value = Reference.new(value) { |target| holder[key] = target }
+        value = Reference.new(value) do |ref, root, symbols|
+          holder[key] = ref.find(root, symbols, holder)
+        end
       end
       value
     end
@@ -44,7 +46,7 @@ module Siren
       value
     end
     
-    Reference.resolve!(@symbols)
+    Reference.resolve!(result, @symbols)
     @json_parser.walk(result, &block) if block_given?
     
     result

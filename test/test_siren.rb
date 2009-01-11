@@ -62,6 +62,8 @@ class SirenTest < Test::Unit::TestCase
     romeo, juliet = fixtures(:refs)[2..3]
     assert romeo.equal?(juliet.favourite)
     assert juliet.equal?(romeo.favourite)
+    
+    assert_equal "romeo", romeo.handle
   end
   
   def test_json_query

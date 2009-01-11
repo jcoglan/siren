@@ -9,20 +9,24 @@ module Siren
       @@cache = {}
     end
     
-    def self.resolve!(table)
-      @@cache.each { |id, ref| ref.resolve!(table) }
+    def self.resolve!(root, symbols)
+      @@cache.each { |id, ref| ref.resolve!(root, symbols) }
     end
     
     def initialize(hash, &block)
-      @id = hash[REF_FIELD]
+      @query = Siren.compile_query(hash[REF_FIELD])
       @@cache ||= {}
-      @@cache[@id] = self
+      @@cache[hash.__id__] = self
       add_observer(Observer.new(&block)) if block_given?
     end
     
-    def resolve!(table)
+    def resolve!(root, symbols)
       changed(true)
-      notify_observers(table[@id])
+      notify_observers(self, root, symbols)
+    end
+    
+    def find(root, symbols, current)
+      @query.value(root, symbols, current)
     end
     
   end
