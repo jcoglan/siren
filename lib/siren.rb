@@ -1,9 +1,11 @@
 require 'rubygems'
 require 'treetop'
 
-%w(walker parser node reference observer ../json).each do |path|
+%w(walker parser node reference observer ../json ../json_query ../json_query/nodes).each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
 end
+
+$p = JsonQueryParser.new
 
 class JsonParser
   include Siren::Walker
@@ -17,32 +19,37 @@ module Siren
   REF_FIELD  = "$ref"
   
   def self.parse(string, &block)
-    @parser ||= JsonParser.new
+    @json_parser ||= JsonParser.new
     Reference.flush!
-    identified = {}
+    @symbols = {}
     
-    result = @parser.parse(string).value rescue nil
+    result = @json_parser.parse(string).value rescue nil
     
-    @parser.walk(result) do |holder, key, value|
+    @json_parser.walk(result) do |holder, key, value|
       if Hash === value && value[REF_FIELD]
         value = Reference.new(value) { |target| holder[key] = target }
       end
       value
     end
     
-    @parser.walk(result) do |holder, key, value|
+    @json_parser.walk(result) do |holder, key, value|
       if Hash === value
         id = value[ID_FIELD]
         value = Node.from_json(value)
-        identified[id] = value
+        @symbols[id] = value
       end
       value
     end
     
-    Reference.resolve!(identified)
-    @parser.walk(result, &block) if block_given?
+    Reference.resolve!(@symbols)
+    @json_parser.walk(result, &block) if block_given?
     
     result
+  end
+  
+  def self.query(expression, root)
+    @query_parser ||= JsonQueryParser.new
+    @query_parser.parse(expression).value(root, @symbols ||{})
   end
 end
 

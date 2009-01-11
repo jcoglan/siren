@@ -1,0 +1,106 @@
+grammar JsonQuery
+  rule query
+    identifier filter* <Query>
+  end
+  
+  rule identifier
+    (root / current / symbol) <Identifier>
+  end
+  
+  rule root
+    "$" <Root>
+  end
+  
+  rule current
+    "@" <Current>
+  end
+  
+  rule symbol
+    [a-z$_] [a-z0-9$_]* <Symbol>
+  end
+  
+  rule filter
+    (field_access / boolean_filter) <Filter>
+  end
+  
+  rule field_access
+    ("." symbol / "[" expression "]") <FieldAccess>
+  end
+  
+  rule boolean_filter
+    "[?" boolean_expression "]" <BooleanFilter>
+  end
+  
+  rule boolean_expression
+    "(" boolean_expression ")" / first:expression comparator second:expression <BooleanExpression>
+  end
+  
+  rule expression
+    space ("(" expression ")" / (query / primitive) <Expression>) space
+  end
+  
+  rule primitive
+    number / string / boolean / null
+  end
+  
+  rule comparator
+    (equal / not_equal / lt / lte / gt / gte) <Comparator>
+  end
+  
+  rule equal
+    "=" <Equal>
+  end
+  
+  rule not_equal
+    "!=" <NotEqual>
+  end
+  
+  rule lt
+    "<" <LessThan>
+  end
+  
+  rule lte
+    "<=" <LessThanOrEqual>
+  end
+  
+  rule gt
+    ">" <GreaterThan>
+  end
+  
+  rule gte
+    ">=" <GreaterThanOrEqual>
+  end
+  
+  rule string
+    "'" ('\\' ("'" / '\\' / '/' / 'b' / 'f' / 'n' / 'r' / 't' / 'u' hex hex hex hex) / [^\'\\])* "'" <String>
+  end
+  
+  rule number
+    "-"? ("0" / [1-9] digit*) ("." digit+)? ([eE] [+-]? digit+)? <Number>
+  end
+  
+  rule digit
+    [0-9]
+  end
+  
+  rule boolean
+    (true / false) <Boolean>
+  end
+  
+  rule true
+    "true" <True>
+  end
+  
+  rule false
+    "false" <False>
+  end
+  
+  rule null
+    "null" <Null>
+  end
+  
+  rule space
+    " "*
+  end
+end
+

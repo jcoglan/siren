@@ -6,8 +6,11 @@ bin/siren
 lib/siren.rb
 lib/json.tt
 lib/json.rb
+lib/json_query.tt
+lib/json_query.rb
 lib/siren/walker.rb
 lib/siren/parser.rb
+lib/siren/json_query_nodes.rb
 lib/siren/node.rb
 lib/siren/reference.rb
 lib/siren/observer.rb

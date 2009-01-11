@@ -64,5 +64,16 @@ class SirenTest < Test::Unit::TestCase
     assert juliet.equal?(romeo.favourite)
   end
   
+  def test_json_query
+    assert_equal [5,6,7], Siren.query("$[? @ > 4 ]", 1..7)
+    assert_equal "FOO", Siren.query("$.upcase", "foo")
+    assert_equal 99, Siren.query("$['key']", {"key" => 99})
+    assert_equal 4, Siren.query("$.values[$.key]", {"key" => 2, "values" => [3,9,4,6]})
+    assert_equal 1, Siren.query("$[? @ = 'foo']", %w(bar foo baz)).size
+    assert_equal 2, Siren.query("$[? @ != 'foo']", %w(bar foo baz)).size
+    
+    assert_equal 2, Siren.query("$.data[? $.value != @]",
+        {"value" => "foo", "data" => %w(bar foo baz)}).size
+  end
 end
 
