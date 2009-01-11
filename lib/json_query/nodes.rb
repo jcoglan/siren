@@ -49,8 +49,8 @@ module JsonQuery
     def value(object, root, symbols)
       index = index(root, symbols)
       
-      return Hash === object ? object.values : object if index == :*
-      return object[index] if Array === object
+      return (Hash === object ? object.values : object) if index == :*
+      return object[index] if Array === object and Numeric === index
       
       if Hash === object
         key = [index, index.to_s, index.to_sym].find { |i| object.has_key?(i) }

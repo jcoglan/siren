@@ -90,6 +90,9 @@ class SirenTest < Test::Unit::TestCase
     
     assert_equal 5, Siren.query("$.store.*", fixtures(:store)).flatten.size
     assert_equal 2, Siren.query("$.store[*]", fixtures(:store)).size
+    
+    assert_equal [7,8], Siren.query("$.val[? @ > $.key.*.size * 2]",
+        {:key => [9,5,7], :val => 1..8})
   end
 end
 
