@@ -48,7 +48,11 @@ module JsonQuery
     
     def value(object, root, symbols)
       index = index(root, symbols)
-      return object[index] if Array === object or Hash === object
+      return object[index] if Array === object
+      if Hash === object
+        key = [index, index.to_s, index.to_sym].find { |i| object.has_key?(i) }
+        return object[key] if key
+      end
       return object.__send__(index) if object.respond_to?(index)
       object.instance_variable_get("@#{ index }")
     end
@@ -56,10 +60,12 @@ module JsonQuery
   
   class BooleanFilter < Treetop::Runtime::SyntaxNode
     def value(list, root, symbols)
-      list.select do |object|
+      present, results = JsonQuery.current, list.select do |object|
         JsonQuery.current = object
         boolean_expression.value(root, symbols)
       end
+      JsonQuery.current = present
+      results
     end
   end
   

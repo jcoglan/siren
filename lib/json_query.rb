@@ -583,32 +583,32 @@ module JsonQuery
     end
 
     i0 = index
-    r1 = _nt_equal
+    r1 = _nt_not_equal
     if r1
       r0 = r1
       r0.extend(Comparator)
     else
-      r2 = _nt_not_equal
+      r2 = _nt_lte
       if r2
         r0 = r2
         r0.extend(Comparator)
       else
-        r3 = _nt_lt
+        r3 = _nt_gte
         if r3
           r0 = r3
           r0.extend(Comparator)
         else
-          r4 = _nt_lte
+          r4 = _nt_equal
           if r4
             r0 = r4
             r0.extend(Comparator)
           else
-            r5 = _nt_gt
+            r5 = _nt_lt
             if r5
               r0 = r5
               r0.extend(Comparator)
             else
-              r6 = _nt_gte
+              r6 = _nt_gt
               if r6
                 r0 = r6
                 r0.extend(Comparator)

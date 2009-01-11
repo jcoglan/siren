@@ -75,6 +75,10 @@ class SirenTest < Test::Unit::TestCase
     assert_equal 2, Siren.query("$.data[? $.value != @]",
         {"value" => "foo", "data" => %w(bar foo baz)}).size
     
+    data = {"keys" => [1,7,9,5,6], :values => [4,0,5,2,8,1,7,9]}
+    assert_equal 9, Siren.query("$.keys[? @ >= 9][0]", data)
+    assert_equal [4,0,5,2,1], Siren.query("$.values[? $.keys[? @ = 6][0] > @ ]", data)
+    
     Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
     assert_equal 'jcoglan', Siren.query("whizz.name", {})
   end

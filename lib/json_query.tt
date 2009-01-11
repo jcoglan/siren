@@ -44,7 +44,7 @@ grammar JsonQuery
   end
   
   rule comparator
-    (equal / not_equal / lt / lte / gt / gte) <Comparator>
+    (not_equal / lte / gte / equal / lt / gt) <Comparator>
   end
   
   rule equal
