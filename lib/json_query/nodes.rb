@@ -84,6 +84,14 @@ module JsonQuery
     end
   end
   
+  class MapFilter < Treetop::Runtime::SyntaxNode
+    def value(list, root, symbols, current = nil)
+      list.map do |object|
+        expression.value(root, symbols, object)
+      end
+    end
+  end
+  
   class And < Treetop::Runtime::SyntaxNode
     def value(root, symbols, current = nil)
       first.value(root, symbols, current) && second.value(root, symbols, current)

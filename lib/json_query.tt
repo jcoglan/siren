@@ -24,7 +24,7 @@ grammar JsonQuery
   end
   
   rule filter
-    (field_access / boolean_filter) <Filter>
+    (field_access / boolean_filter / map_filter) <Filter>
   end
   
   rule field_access
@@ -41,6 +41,10 @@ grammar JsonQuery
   
   rule boolean_filter
     "[?" boolean_expression "]" <BooleanFilter>
+  end
+  
+  rule map_filter
+    "[=" expression "]" <MapFilter>
   end
   
   rule boolean_expression

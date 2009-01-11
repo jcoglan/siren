@@ -227,8 +227,14 @@ module JsonQuery
         r0 = r2
         r0.extend(Filter)
       else
-        self.index = i0
-        r0 = nil
+        r3 = _nt_map_filter
+        if r3
+          r0 = r3
+          r0.extend(Filter)
+        else
+          self.index = i0
+          r0 = nil
+        end
       end
     end
 
@@ -484,6 +490,57 @@ module JsonQuery
     end
 
     node_cache[:boolean_filter][start_index] = r0
+
+    return r0
+  end
+
+  module MapFilter0
+    def expression
+      elements[1]
+    end
+
+  end
+
+  def _nt_map_filter
+    start_index = index
+    if node_cache[:map_filter].has_key?(index)
+      cached = node_cache[:map_filter][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0, s0 = index, []
+    if input.index("[=", index) == index
+      r1 = (SyntaxNode).new(input, index...(index + 2))
+      @index += 2
+    else
+      terminal_parse_failure("[=")
+      r1 = nil
+    end
+    s0 << r1
+    if r1
+      r2 = _nt_expression
+      s0 << r2
+      if r2
+        if input.index("]", index) == index
+          r3 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure("]")
+          r3 = nil
+        end
+        s0 << r3
+      end
+    end
+    if s0.last
+      r0 = (MapFilter).new(input, i0...index, s0)
+      r0.extend(MapFilter0)
+    else
+      self.index = i0
+      r0 = nil
+    end
+
+    node_cache[:map_filter][start_index] = r0
 
     return r0
   end
