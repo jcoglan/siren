@@ -76,11 +76,47 @@ module JsonQuery
     end
   end
   
-  class Expression < Treetop::Runtime::SyntaxNode
+  class Multiplicative < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      operator.value(first.value(root, symbols), second.value(root, symbols))
+    end
+  end
+  
+  class Additive < Treetop::Runtime::SyntaxNode
+    def value(root, symbols)
+      operator.value(first.value(root, symbols), second.value(root, symbols))
+    end
+  end
+  
+  class Atom < Treetop::Runtime::SyntaxNode
     def value(root, symbols)
       element = elements[1]
       return element.expression.value(root, symbols) if element.respond_to?(:expression)
       element.value(root, symbols)
+    end
+  end
+  
+  class Multiplication < Treetop::Runtime::SyntaxNode
+    def value(expr1, expr2)
+      expr1 * expr2
+    end
+  end
+  
+  class Division < Treetop::Runtime::SyntaxNode
+    def value(expr1, expr2)
+      expr1 / expr2
+    end
+  end
+  
+  class Addition < Treetop::Runtime::SyntaxNode
+    def value(expr1, expr2)
+      expr1 + expr2
+    end
+  end
+  
+  class Subtraction < Treetop::Runtime::SyntaxNode
+    def value(expr1, expr2)
+      expr1 - expr2
     end
   end
   

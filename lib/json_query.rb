@@ -2,7 +2,39 @@ module JsonQuery
   include Treetop::Runtime
 
   def root
-    @root || :query
+    @root || :expression
+  end
+
+  def _nt_expression
+    start_index = index
+    if node_cache[:expression].has_key?(index)
+      cached = node_cache[:expression][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    r1 = _nt_additive
+    if r1
+      r0 = r1
+    else
+      r2 = _nt_multiplicative
+      if r2
+        r0 = r2
+      else
+        r3 = _nt_atom
+        if r3
+          r0 = r3
+        else
+          self.index = i0
+          r0 = nil
+        end
+      end
+    end
+
+    node_cache[:expression][start_index] = r0
+
+    return r0
   end
 
   module Query0
@@ -442,14 +474,154 @@ module JsonQuery
     return r0
   end
 
-  module Expression0
+  module Additive0
+    def first
+      elements[0]
+    end
+
+    def operator
+      elements[1]
+    end
+
+    def second
+      elements[2]
+    end
+  end
+
+  def _nt_additive
+    start_index = index
+    if node_cache[:additive].has_key?(index)
+      cached = node_cache[:additive][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    i1, s1 = index, []
+    r2 = _nt_multiplicative
+    s1 << r2
+    if r2
+      i3 = index
+      r4 = _nt_add
+      if r4
+        r3 = r4
+      else
+        r5 = _nt_subtract
+        if r5
+          r3 = r5
+        else
+          self.index = i3
+          r3 = nil
+        end
+      end
+      s1 << r3
+      if r3
+        r6 = _nt_additive
+        s1 << r6
+      end
+    end
+    if s1.last
+      r1 = (Additive).new(input, i1...index, s1)
+      r1.extend(Additive0)
+    else
+      self.index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      r7 = _nt_multiplicative
+      if r7
+        r0 = r7
+      else
+        self.index = i0
+        r0 = nil
+      end
+    end
+
+    node_cache[:additive][start_index] = r0
+
+    return r0
+  end
+
+  module Multiplicative0
+    def first
+      elements[0]
+    end
+
+    def operator
+      elements[1]
+    end
+
+    def second
+      elements[2]
+    end
+  end
+
+  def _nt_multiplicative
+    start_index = index
+    if node_cache[:multiplicative].has_key?(index)
+      cached = node_cache[:multiplicative][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    i1, s1 = index, []
+    r2 = _nt_atom
+    s1 << r2
+    if r2
+      i3 = index
+      r4 = _nt_times
+      if r4
+        r3 = r4
+      else
+        r5 = _nt_divide
+        if r5
+          r3 = r5
+        else
+          self.index = i3
+          r3 = nil
+        end
+      end
+      s1 << r3
+      if r3
+        r6 = _nt_multiplicative
+        s1 << r6
+      end
+    end
+    if s1.last
+      r1 = (Multiplicative).new(input, i1...index, s1)
+      r1.extend(Multiplicative0)
+    else
+      self.index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      r7 = _nt_atom
+      if r7
+        r0 = r7
+      else
+        self.index = i0
+        r0 = nil
+      end
+    end
+
+    node_cache[:multiplicative][start_index] = r0
+
+    return r0
+  end
+
+  module Atom0
     def expression
       elements[1]
     end
 
   end
 
-  module Expression1
+  module Atom1
     def space
       elements[0]
     end
@@ -459,10 +631,10 @@ module JsonQuery
     end
   end
 
-  def _nt_expression
+  def _nt_atom
     start_index = index
-    if node_cache[:expression].has_key?(index)
-      cached = node_cache[:expression][index]
+    if node_cache[:atom].has_key?(index)
+      cached = node_cache[:atom][index]
       @index = cached.interval.end if cached
       return cached
     end
@@ -497,7 +669,7 @@ module JsonQuery
       end
       if s3.last
         r3 = (SyntaxNode).new(input, i3...index, s3)
-        r3.extend(Expression0)
+        r3.extend(Atom0)
       else
         self.index = i3
         r3 = nil
@@ -509,67 +681,129 @@ module JsonQuery
         if r7
           r2 = r7
         else
-          r8 = _nt_primitive
+          r8 = _nt_number
           if r8
             r2 = r8
           else
-            self.index = i2
-            r2 = nil
+            r9 = _nt_string
+            if r9
+              r2 = r9
+            else
+              r10 = _nt_boolean
+              if r10
+                r2 = r10
+              else
+                r11 = _nt_null
+                if r11
+                  r2 = r11
+                else
+                  self.index = i2
+                  r2 = nil
+                end
+              end
+            end
           end
         end
       end
       s0 << r2
       if r2
-        r9 = _nt_space
-        s0 << r9
+        r12 = _nt_space
+        s0 << r12
       end
     end
     if s0.last
-      r0 = (Expression).new(input, i0...index, s0)
-      r0.extend(Expression1)
+      r0 = (Atom).new(input, i0...index, s0)
+      r0.extend(Atom1)
     else
       self.index = i0
       r0 = nil
     end
 
-    node_cache[:expression][start_index] = r0
+    node_cache[:atom][start_index] = r0
 
     return r0
   end
 
-  def _nt_primitive
+  def _nt_times
     start_index = index
-    if node_cache[:primitive].has_key?(index)
-      cached = node_cache[:primitive][index]
+    if node_cache[:times].has_key?(index)
+      cached = node_cache[:times][index]
       @index = cached.interval.end if cached
       return cached
     end
 
-    i0 = index
-    r1 = _nt_number
-    if r1
-      r0 = r1
+    if input.index("*", index) == index
+      r0 = (Multiplication).new(input, index...(index + 1))
+      @index += 1
     else
-      r2 = _nt_string
-      if r2
-        r0 = r2
-      else
-        r3 = _nt_boolean
-        if r3
-          r0 = r3
-        else
-          r4 = _nt_null
-          if r4
-            r0 = r4
-          else
-            self.index = i0
-            r0 = nil
-          end
-        end
-      end
+      terminal_parse_failure("*")
+      r0 = nil
     end
 
-    node_cache[:primitive][start_index] = r0
+    node_cache[:times][start_index] = r0
+
+    return r0
+  end
+
+  def _nt_divide
+    start_index = index
+    if node_cache[:divide].has_key?(index)
+      cached = node_cache[:divide][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    if input.index("/", index) == index
+      r0 = (Division).new(input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure("/")
+      r0 = nil
+    end
+
+    node_cache[:divide][start_index] = r0
+
+    return r0
+  end
+
+  def _nt_add
+    start_index = index
+    if node_cache[:add].has_key?(index)
+      cached = node_cache[:add][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    if input.index("+", index) == index
+      r0 = (Addition).new(input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure("+")
+      r0 = nil
+    end
+
+    node_cache[:add][start_index] = r0
+
+    return r0
+  end
+
+  def _nt_subtract
+    start_index = index
+    if node_cache[:subtract].has_key?(index)
+      cached = node_cache[:subtract][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    if input.index("-", index) == index
+      r0 = (Subtraction).new(input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure("-")
+      r0 = nil
+    end
+
+    node_cache[:subtract][start_index] = r0
 
     return r0
   end

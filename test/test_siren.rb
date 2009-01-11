@@ -79,6 +79,9 @@ class SirenTest < Test::Unit::TestCase
     assert_equal 9, Siren.query("$.keys[? @ >= 9][0]", data)
     assert_equal [4,0,5,2,1], Siren.query("$.values[? $.keys[? @ = 6][0] > @ ]", data)
     
+    assert_equal 9, Siren.query("($.val - 2) + 4", {:val => 7})
+    assert_equal "foobar", Siren.query("'foo' + 'bar'", {:val => 7})
+    
     Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
     assert_equal 'jcoglan', Siren.query("whizz.name", {})
   end

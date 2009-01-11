@@ -1,4 +1,8 @@
 grammar JsonQuery
+  rule expression
+    additive / multiplicative / atom
+  end
+  
   rule query
     identifier filter* <Query>
   end
@@ -35,12 +39,32 @@ grammar JsonQuery
     ("(" boolean_expression ")" / first:expression comparator second:expression) <BooleanExpression>
   end
   
-  rule expression
-    space ("(" expression ")" / query / primitive) space <Expression>
+  rule additive
+    first:multiplicative operator:(add / subtract) second:additive <Additive> / multiplicative
   end
   
-  rule primitive
-    number / string / boolean / null
+  rule multiplicative
+    first:atom operator:(times / divide) second:multiplicative <Multiplicative> / atom
+  end
+  
+  rule atom
+    space ("(" expression ")" / query / number / string / boolean / null) space <Atom>
+  end
+  
+  rule times
+    "*" <Multiplication>
+  end
+  
+  rule divide
+    "/" <Division>
+  end
+  
+  rule add
+    "+" <Addition>
+  end
+  
+  rule subtract
+    "-" <Subtraction>
   end
   
   rule comparator
