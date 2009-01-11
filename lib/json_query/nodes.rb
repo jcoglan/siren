@@ -1,20 +1,9 @@
 module JsonQuery
   
-  @current = nil
-  def self.current; @current; end
-  
-  def self.currently(object)
-    present = @current
-    @current = object
-    result = yield
-    @current = present
-    result
-  end
-  
   class Query < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      object = identifier.value(root, symbols)
-      filters.inject(object) { |value, filter| filter.value(value, root, symbols) }
+    def value(root, symbols, current = nil)
+      object = identifier.value(root, symbols, current)
+      filters.inject(object) { |value, filter| filter.value(value, root, symbols, current) }
     end
     
     def filters
@@ -26,19 +15,19 @@ module JsonQuery
   end
   
   class Root < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       root
     end
   end
   
   class Current < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      JsonQuery.current
+    def value(root, symbols, current = nil)
+      current
     end
   end
   
   class Symbol < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       symbols[text_value]
     end
   end
@@ -47,14 +36,14 @@ module JsonQuery
   end
   
   module FieldAccess
-    def index(object, root, symbols)
+    def index(object, root, symbols, current = nil)
       element = elements[1]
       return element.text_value if Symbol === element
-      JsonQuery.currently(object) { element.value(root, symbols) }
+      element.value(root, symbols, object)
     end
     
-    def value(object, root, symbols)
-      index = index(object, root, symbols)
+    def value(object, root, symbols, current = nil)
+      index = index(object, root, symbols, current)
       
       return (Hash === object ? object.values : object) if index == :*
       return object[index] if Array === object and Numeric === index
@@ -70,36 +59,36 @@ module JsonQuery
   end
   
   class AllFilter < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       :*
     end
   end
   
   class BooleanFilter < Treetop::Runtime::SyntaxNode
-    def value(list, root, symbols)
+    def value(list, root, symbols, current = nil)
       list.select do |object|
-        JsonQuery.currently(object) { boolean_expression.value(root, symbols) }
+        boolean_expression.value(root, symbols, object)
       end
     end
   end
   
   class And < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      first.value(root, symbols) && second.value(root, symbols)
+    def value(root, symbols, current = nil)
+      first.value(root, symbols, current) && second.value(root, symbols, current)
     end
   end
   
   class Or < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      first.value(root, symbols) || second.value(root, symbols)
+    def value(root, symbols, current = nil)
+      first.value(root, symbols, current) || second.value(root, symbols, current)
     end
   end
   
   class BooleanAtom < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       element = elements[1]
-      return element.boolean_expression.value(root, symbols) if element.respond_to?(:boolean_expression)
-      comparator.value(first.value(root, symbols), second.value(root, symbols))
+      return element.boolean_expression.value(root, symbols, current) if element.respond_to?(:boolean_expression)
+      comparator.value(first.value(root, symbols, current), second.value(root, symbols, current))
     end
     
     def comparator
@@ -116,22 +105,22 @@ module JsonQuery
   end
   
   class Multiplicative < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      operator.value(first.value(root, symbols), second.value(root, symbols))
+    def value(root, symbols, current = nil)
+      operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
     end
   end
   
   class Additive < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
-      operator.value(first.value(root, symbols), second.value(root, symbols))
+    def value(root, symbols, current = nil)
+      operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
     end
   end
   
   class Atom < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       element = elements[1]
-      return element.expression.value(root, symbols) if element.respond_to?(:expression)
-      element.value(root, symbols)
+      return element.expression.value(root, symbols, current) if element.respond_to?(:expression)
+      element.value(root, symbols, current)
     end
   end
   
@@ -201,37 +190,37 @@ module JsonQuery
   end
   
   class String < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       @value ||= eval(text_value)
     end
   end
   
   class Number < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       @value ||= eval(text_value)
     end
   end
   
   module Boolean
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       data.value
     end
   end
   
   class True < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       true
     end
   end
   
   class False < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       false
     end
   end
   
   class Null < Treetop::Runtime::SyntaxNode
-    def value(root, symbols)
+    def value(root, symbols, current = nil)
       nil
     end
   end
