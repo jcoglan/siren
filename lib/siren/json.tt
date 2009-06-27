@@ -1,0 +1,86 @@
+module Siren
+  grammar Json
+    rule value
+      space data:(object / array / string / number / true / false / null) space {
+        def value
+          data.value
+        end
+      }
+    end
+    
+    rule object
+      "{" space list:( first:(key_value_pair) others:("," key_value_pair)* )? "}" {
+        def value
+          pairs = [list.first] + list.others.elements.map { |e| e.key_value_pair }
+          pairs.inject({}) do |hash, pair|
+            hash[pair.string.value] = pair.value.value
+            hash
+          end
+        rescue
+          {}
+        end
+      }
+    end
+    
+    rule key_value_pair
+      space string space ":" value
+    end
+    
+    rule array
+      "[" space list:( first:(value) others:("," value)* )? "]" {
+        def value
+          [list.first.value] + list.others.elements.map { |v| v.value.value }
+        rescue
+          []
+        end
+      }
+    end
+    
+    rule string
+      '"' ('\\' ('"' / '\\' / '/' / 'b' / 'f' / 'n' / 'r' / 't' / 'u' hex hex hex hex) / [^\"\\])* '"' {
+        def value
+          eval(text_value)
+        end
+      }
+    end
+    
+    rule number
+      "-"? ("0" / [1-9] digit*) ("." digit+)? ([eE] [+-]? digit+)? {
+        def value
+          eval(text_value)
+        end
+      }
+    end
+    
+    rule digit
+      [0-9]
+    end
+    
+    rule hex
+      [a-f] / digit
+    end
+    
+    rule true
+      "true" {
+        def value; true; end
+      }
+    end
+    
+    rule false
+      "false" {
+        def value; false; end
+      }
+    end
+    
+    rule null
+      "null" {
+        def value; nil; end
+      }
+    end
+    
+    rule space
+      [\s\n\t]*
+    end
+  end
+end
+

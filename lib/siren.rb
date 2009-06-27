@@ -1,17 +1,10 @@
 require 'rubygems'
 require 'treetop'
 
-%w(walker parser node reference observer).each do |path|
+%w[ json json_query json_query_nodes
+    walker parser node reference observer
+].each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
-end
-%w(json json_query json_query/nodes).each do |path|
-  require File.dirname(__FILE__) + '/' + path
-end
-
-$p = JsonQueryParser.new
-
-class JsonParser
-  include Siren::Walker
 end
 
 module Siren
@@ -20,6 +13,10 @@ module Siren
   TYPE_FIELD = "type"
   ID_FIELD   = "id"
   REF_FIELD  = "$ref"
+  
+  class JsonParser
+    include Siren::Walker
+  end
   
   def self.parse(string, &block)
     @json_parser ||= JsonParser.new
@@ -53,7 +50,7 @@ module Siren
   end
   
   def self.query(expression, root)
-    compile_query(expression).value(root, @symbols ||{})
+    compile_query(expression).value(root, @symbols || {})
   end
   
   def self.compile_query(expression)
