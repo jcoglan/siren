@@ -1,9 +1,7 @@
-require 'observer'
-
 module Siren
   class Reference
     
-    include Observable
+    include Eventful
     
     def self.flush!
       @@cache = {}
@@ -13,16 +11,14 @@ module Siren
       @@cache.each { |id, ref| ref.resolve!(root, symbols) }
     end
     
-    def initialize(hash, &block)
+    def initialize(hash)
       @query = Siren.compile_query(hash[REF_FIELD])
       @@cache ||= {}
       @@cache[hash.__id__] = self
-      add_observer(Observer.new(&block)) if block_given?
     end
     
     def resolve!(root, symbols)
-      changed(true)
-      notify_observers(self, root, symbols)
+      fire(:resolve, root, symbols)
     end
     
     def find(root, symbols, current)

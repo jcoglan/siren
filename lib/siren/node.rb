@@ -6,9 +6,9 @@ module Siren
       hash.each do |key, value|
         object.instance_variable_set("@#{key}", value)
         if Reference === value
-          value.add_observer(Observer.new { |ref, root, symbols|
+          value.on(:resolve) do |ref, root, symbols|
             object.instance_variable_set("@#{key}", ref.find(root, symbols, object))
-          })
+          end
         end
       end
       object

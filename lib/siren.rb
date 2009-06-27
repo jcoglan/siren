@@ -1,8 +1,9 @@
 require 'rubygems'
 require 'treetop'
+require 'eventful'
 
 %w[ json json_query json_query_nodes
-    walker parser node reference observer
+    walker parser node reference
 ].each do |path|
   require File.dirname(__FILE__) + '/siren/' + path
 end
@@ -27,7 +28,8 @@ module Siren
     
     @json_parser.walk(result) do |holder, key, value|
       if Hash === value && value[REF_FIELD]
-        value = Reference.new(value) do |ref, root, symbols|
+        value = Reference.new(value)
+        value.on(:resolve) do |ref, root, symbols|
           holder[key] = ref.find(root, symbols, holder)
         end
       end
