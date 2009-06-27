@@ -64,48 +64,61 @@ class SirenTest < Test::Unit::TestCase
     assert juliet.equal?(romeo.favourite)
     
     assert_equal "romeo", romeo.handle
+    
+    Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
+    assert_equal 'jcoglan', Siren.query("whizz.name", {})
   end
   
-  def test_json_query
-    assert_equal [5,6,7], Siren.query("$[? @ > 4 ]", 1..7)
+  def test_computation_expression
+    assert_equal "foobar", Siren.query("'foo' + 'bar'", {:val => 7})
+  end
+  
+  def test_field_access
     assert_equal "FOO", Siren.query("$.upcase", "foo")
     assert_equal 99, Siren.query("$['key']", {"key" => 99})
     assert_equal 4, Siren.query("$.values[$.key]", {"key" => 2, "values" => [3,9,4,6]})
+  end
+  
+  def test_array_filters
+    assert_equal 5, Siren.query("$.store.*", fixtures(:store)).flatten.size
+    assert_equal 2, Siren.query("$.store[*]", fixtures(:store)).size
+    
+    assert_equal [5,6,7], Siren.query("$[? @ > 4 ]", 1..7)
     assert_equal 1, Siren.query("$[? @ = ('foo')]", %w(bar foo baz)).size
     assert_equal 2, Siren.query("$[?( @ != 'foo'  )]", %w(bar foo baz)).size
+    
+    data = {"keys" => [1,7,9,5,6], :values => [4,0,5,2,8,1,7,9]}
+    assert_equal 9, Siren.query("$.keys[? @ >= 9][0]", data)
+    assert_equal [1,3,4,5], Siren.query("$[? @ > 2 & @ < 6 | @ = 1]", 1..9)
+  end
+  
+  def test_filters_with_cross_references
+    data = {"keys" => [1,7,9,5,6], :values => [4,0,5,2,8,1,7,9]}
+    assert_equal [4,0,5,2,1], Siren.query("$.values[? $.keys[? @ = 6][0] > @ ]", data)
     
     assert_equal 2, Siren.query("$.data[? $.value != @]",
         {"value" => "foo", "data" => %w(bar foo baz)}).size
     
-    data = {"keys" => [1,7,9,5,6], :values => [4,0,5,2,8,1,7,9]}
-    assert_equal 9, Siren.query("$.keys[? @ >= 9][0]", data)
-    assert_equal [4,0,5,2,1], Siren.query("$.values[? $.keys[? @ = 6][0] > @ ]", data)
-    
-    assert_equal [1,3,4,5], Siren.query("$[? @ > 2 & @ < 6 | @ = 1]", 1..9)
-    
     assert_equal 9, Siren.query("$.key[? @ = ($.val - 2) + 4][0]",
         {:key => [0,2,9,4,7], :val => 7})
-    assert_equal "foobar", Siren.query("'foo' + 'bar'", {:val => 7})
-    
-    Siren.parse '[{"id": "whizz", "name": "jcoglan"}]'
-    assert_equal 'jcoglan', Siren.query("whizz.name", {})
-    
-    assert_equal 5, Siren.query("$.store.*", fixtures(:store)).flatten.size
-    assert_equal 2, Siren.query("$.store[*]", fixtures(:store)).size
     
     assert_equal [7,8], Siren.query("$.val[? @ > $.key.*.size * 2]",
         {:key => [9,5,7], :val => 1..8})
-    
+  end
+  
+  def test_bookstore
     assert_equal "The Lord of the Rings",
         Siren.query("$.store.book[@.length - 1]", fixtures(:store))["title"]
     
-    assert_equal ["Sayings of the Century", "The Lord of the Rings"],
+    assert_equal [ "Sayings of the Century", "The Lord of the Rings" ],
         Siren.query("$.store.book[0,3]", fixtures(:store)).map { |b| b["title"] }
     
-    assert_equal fixtures(:store)["store"]["book"].map { |b| b["title"] },
+    assert_equal [ "Sayings of the Century", "Sword of Honour",
+                   "Moby Dick", "The Lord of the Rings" ],
         Siren.query("$.store.book[=title ]", fixtures(:store))
     
-    assert_equal fixtures(:store)["store"]["book"].map { |b| b["title"] }.sort,
+    assert_equal [ "Moby Dick", "Sayings of the Century",
+                   "Sword of Honour", "The Lord of the Rings" ],
         Siren.query("$.store.book[/title][= @.title ]", fixtures(:store))
   end
 end
