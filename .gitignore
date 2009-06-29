@@ -1,2 +1,5 @@
 *.rbc
+pkg
+doc
+README.txt
 

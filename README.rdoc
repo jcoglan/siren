@@ -1,0 +1,83 @@
+= Siren
+
+* http://github.com/jcoglan/siren
+
+Siren is a JSON and JSONQuery interpreter for Ruby. It extends the normal process
+process of JSON-to-Ruby processing with cross-references, automatic typecasting,
+and a succinct query language for filtering JSON and Ruby object graphs.
+
+
+== Usage
+
+As expected, Siren can be used as a basic JSON parser, though if that's all you
+want you'll be better off with more performant libraries like the +json+ gem.
+
+  Siren.parse '[{"name": "mike"}]'
+  #=> [{"name"=>"mike"}]
+
+The features listed below go beyond standard JSON and are modelled on the feature
+set listed in this SitePen article:
+
+  http://www.sitepen.com/blog/2008/07/16/jsonquery-data-querying-beyond-jsonpath/
+
+
+=== Cross-references
+
+Siren allows JSON objects to be given IDs, and for other objects to make
+references back to them from within the same document. This allows for cyclic
+data structures and other objects inexpressible in standard JSON.
+
+  data = Siren.parse <<-JSON
+          [
+              {
+                  "id":       "obj1",
+                  "name":     "mike"
+              }, {
+                  "name":     "bob",
+                  "friend":   {"$ref": "obj1"}
+              }
+          ]
+  JSON
+  
+  #=> [ {"name" => "mike", "id" => "obj1"},
+        {"name" => "bob", "friend" => {"name" => "mike", "id" => "obj1"} } ]
+
+So +bob+ has a cross-reference to +mike+, which the parser resolves for us. Note
++mike+ is not copied but is referenced by +bob+:
+
+  data[0].__id__              #=> -607191558
+  data[1]['friend'].__id__    #=> -607191558
+
+The general syntax for a cross-reference is <tt>{"$ref": ID_STRING}</tt>; the parser
+will replace this with the referenced object in the Ruby output.
+
+
+== Install
+
+  sudo gem install siren
+
+
+== License
+
+(The MIT License)
+
+Copyright (c) 2009 James Coglan
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -12,7 +12,7 @@ end
 
 task :tt do
   %w(json json_query).each do |grammar|
-    `tt lib/#{grammar}.tt`
+    `tt lib/siren/#{grammar}.tt`
   end
 end
 

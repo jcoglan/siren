@@ -9,7 +9,7 @@ require 'eventful'
 end
 
 module Siren
-  VERSION = '0.1.0'
+  VERSION = '0.2.0'
   
   TYPE_FIELD = "type"
   ID_FIELD   = "id"
