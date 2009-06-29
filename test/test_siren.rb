@@ -51,6 +51,8 @@ class SirenTest < Test::Unit::TestCase
     mike = Person.new('ford')
     bob = Person.new('bentley', 'ferrari', 'zonda')
     assert_equal( {"people" => [mike, bob]}, fixtures(:people) )
+    
+    assert_kind_of Person, Siren.parse('{"type": "person"}')
   end
   
   def test_referencing

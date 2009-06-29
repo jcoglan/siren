@@ -45,6 +45,8 @@ module Siren
       value
     end
     
+    result = Node.from_json(result)
+    
     Reference.resolve!(result, @symbols)
     @json_parser.walk(result, &block) if block_given?
     

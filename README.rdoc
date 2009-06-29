@@ -2,8 +2,8 @@
 
 * http://github.com/jcoglan/siren
 
-Siren is a JSON and JSONQuery interpreter for Ruby. It extends the normal process
-process of JSON-to-Ruby processing with cross-references, automatic typecasting,
+Siren is a JSON and JSONQuery interpreter for Ruby. It extends the normal functionality
+of JSON-to-Ruby processing with cross-references, automatic typecasting,
 and a succinct query language for filtering JSON and Ruby object graphs.
 
 
@@ -50,6 +50,30 @@ So +bob+ has a cross-reference to +mike+, which the parser resolves for us. Note
 
 The general syntax for a cross-reference is <tt>{"$ref": ID_STRING}</tt>; the parser
 will replace this with the referenced object in the Ruby output.
+
+
+=== Automatic typecasting
+
+JSON parsers typically output hashes and arrays, these being Ruby's closest analogues
+to the JavaScript types that JSON expresses. Siren allows objects to be imbued with
+a +type+ attribute, which if present causes the parser to cast the object to an
+instance of the named type instead of a hash. Instead of hash keys, the keys in the
+JSON object become instance variables of the typed object. To allow the parser to use
+a class for casting, it must be extended using <tt>Siren::Node</tt>:
+
+  class PersonModel
+    extend Siren::Node
+  end
+  
+  data = Siren.parse <<-JSON
+          {
+              "type":   "person_model",
+              "name":   "Jimmy",
+              "age":    25
+          }
+  JSON
+  
+  #=> #<PersonModel @type="person_model", @age=25, @name="Jimmy">
 
 
 == Install
