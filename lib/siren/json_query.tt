@@ -1,63 +1,11 @@
 module Siren
   grammar JsonQuery
     rule expression
-      additive / multiplicative / atom
-    end
-    
-    rule query
-      identifier filter* <Query>
-    end
-    
-    rule identifier
-      (root / current / symbol) <Identifier>
-    end
-    
-    rule root
-      "$" <Root>
-    end
-    
-    rule current
-      "@" <Current>
-    end
-    
-    rule symbol
-      [A-Za-z$_] [A-Za-z0-9$_]* <Symbol>
-    end
-    
-    rule filter
-      (field_access / boolean_filter / map_filter / sort_filter) <Filter>
-    end
-    
-    rule field_access
-      ("." (symbol / all) / "[" (field_access_expression / all) "]") <FieldAccess>
-    end
-    
-    rule field_access_expression
-      first:expression others:("," expression)* <FieldAccessExpression>
-    end
-    
-    rule all
-      "*" <AllFilter>
-    end
-    
-    rule boolean_filter
-      "[?" boolean_expression "]" <BooleanFilter>
-    end
-    
-    rule map_filter
-      "[=" expression "]" <MapFilter>
-    end
-    
-    rule sort_filter
-      "[" sorter expression "]" <SortFilter>
-    end
-    
-    rule sorter
-      space ("/" / "\\") space <Sorter>
+      sum / product / divmod / atom
     end
     
     rule boolean_expression
-      or_expression / and_expression / boolean_atom
+      or_expression / and_expression / comparison / boolean_atom
     end
     
     rule or_expression
@@ -65,19 +13,27 @@ module Siren
     end
     
     rule and_expression
-      first:boolean_atom "&" second:and_expression <And> / boolean_atom
+      first:comparison "&" second:and_expression <And> / comparison
+    end
+    
+    rule comparison
+      first:expression comparator second:expression <Comparison> / boolean_atom
     end
     
     rule boolean_atom
-      space ("(" boolean_expression ")" / first:expression comparator second:expression) space <BooleanAtom>
+      space ("(" boolean_expression ")" / boolean) space <BooleanAtom>
     end
     
-    rule additive
-      first:multiplicative operator:(add / subtract) second:additive <Additive> / multiplicative
+    rule sum
+      first:product operator:(add / subtract) second:sum <Sum> / product
     end
     
-    rule multiplicative
-      first:atom operator:(times / divide) second:multiplicative <Multiplicative> / atom
+    rule product
+      first:divmod operator:(times / divide) second:product <Product> / divmod
+    end
+    
+    rule divmod
+      first:atom '%' second:divmod <Divmod> / atom
     end
     
     rule atom
@@ -158,6 +114,58 @@ module Siren
     
     rule space
       " "*
+    end
+    
+    rule query
+      identifier filter* <Query>
+    end
+    
+    rule identifier
+      (root / current / symbol) <Identifier>
+    end
+    
+    rule root
+      "$" <Root>
+    end
+    
+    rule current
+      "@" <Current>
+    end
+    
+    rule symbol
+      [A-Za-z$_] [A-Za-z0-9$_]* <Symbol>
+    end
+    
+    rule filter
+      (field_access / boolean_filter / map_filter / sort_filter) <Filter>
+    end
+    
+    rule field_access
+      ("." (symbol / all) / "[" (field_access_expression / all) "]") <FieldAccess>
+    end
+    
+    rule field_access_expression
+      first:expression others:("," expression)* <FieldAccessExpression>
+    end
+    
+    rule all
+      "*" <AllFilter>
+    end
+    
+    rule boolean_filter
+      "[?" boolean_expression "]" <BooleanFilter>
+    end
+    
+    rule map_filter
+      "[=" expression "]" <MapFilter>
+    end
+    
+    rule sort_filter
+      "[" sorter expression "]" <SortFilter>
+    end
+    
+    rule sorter
+      space ("/" / "\\") space <Sorter>
     end
   end
 end

@@ -72,6 +72,7 @@ class SirenTest < Test::Unit::TestCase
   end
   
   def test_computation_expression
+    assert_equal 6,        Siren.query("13 % 7", {})
     assert_equal "foobar", Siren.query("'foo' + 'bar'", {:val => 7})
   end
   

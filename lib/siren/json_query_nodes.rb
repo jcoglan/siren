@@ -116,33 +116,33 @@ module Siren
       end
     end
     
+    class Comparison < Treetop::Runtime::SyntaxNode
+      def value(root, symbols, current = nil)
+        comparator.value(first.value(root, symbols, current), second.value(root, symbols, current))
+      end
+    end
+    
     class BooleanAtom < Treetop::Runtime::SyntaxNode
       def value(root, symbols, current = nil)
         element = elements[1]
         return element.boolean_expression.value(root, symbols, current) if element.respond_to?(:boolean_expression)
-        comparator.value(first.value(root, symbols, current), second.value(root, symbols, current))
-      end
-      
-      def comparator
-        elements[1].comparator
-      end
-      
-      def first
-        elements[1].first
-      end
-      
-      def second
-        elements[1].second
+        element.value(root, symbols, current)
       end
     end
     
-    class Multiplicative < Treetop::Runtime::SyntaxNode
+    class Divmod < Treetop::Runtime::SyntaxNode
+      def value(root, symbols, current = nil)
+        first.value(root, symbols, current) % second.value(root, symbols, current)
+      end
+    end
+    
+    class Product < Treetop::Runtime::SyntaxNode
       def value(root, symbols, current = nil)
         operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
       end
     end
     
-    class Additive < Treetop::Runtime::SyntaxNode
+    class Sum < Treetop::Runtime::SyntaxNode
       def value(root, symbols, current = nil)
         operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
       end

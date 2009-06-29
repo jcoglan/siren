@@ -15,228 +15,21 @@ module Siren
       end
 
       i0 = index
-      r1 = _nt_additive
+      r1 = _nt_sum
       if r1
         r0 = r1
       else
-        r2 = _nt_multiplicative
+        r2 = _nt_product
         if r2
           r0 = r2
         else
-          r3 = _nt_atom
+          r3 = _nt_divmod
           if r3
             r0 = r3
           else
-            self.index = i0
-            r0 = nil
-          end
-        end
-      end
-
-      node_cache[:expression][start_index] = r0
-
-      return r0
-    end
-
-    module Query0
-      def identifier
-        elements[0]
-      end
-
-    end
-
-    def _nt_query
-      start_index = index
-      if node_cache[:query].has_key?(index)
-        cached = node_cache[:query][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      r1 = _nt_identifier
-      s0 << r1
-      if r1
-        s2, i2 = [], index
-        loop do
-          r3 = _nt_filter
-          if r3
-            s2 << r3
-          else
-            break
-          end
-        end
-        r2 = SyntaxNode.new(input, i2...index, s2)
-        s0 << r2
-      end
-      if s0.last
-        r0 = (Query).new(input, i0...index, s0)
-        r0.extend(Query0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:query][start_index] = r0
-
-      return r0
-    end
-
-    def _nt_identifier
-      start_index = index
-      if node_cache[:identifier].has_key?(index)
-        cached = node_cache[:identifier][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0 = index
-      r1 = _nt_root
-      if r1
-        r0 = r1
-        r0.extend(Identifier)
-      else
-        r2 = _nt_current
-        if r2
-          r0 = r2
-          r0.extend(Identifier)
-        else
-          r3 = _nt_symbol
-          if r3
-            r0 = r3
-            r0.extend(Identifier)
-          else
-            self.index = i0
-            r0 = nil
-          end
-        end
-      end
-
-      node_cache[:identifier][start_index] = r0
-
-      return r0
-    end
-
-    def _nt_root
-      start_index = index
-      if node_cache[:root].has_key?(index)
-        cached = node_cache[:root][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      if input.index("$", index) == index
-        r0 = (Root).new(input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure("$")
-        r0 = nil
-      end
-
-      node_cache[:root][start_index] = r0
-
-      return r0
-    end
-
-    def _nt_current
-      start_index = index
-      if node_cache[:current].has_key?(index)
-        cached = node_cache[:current][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      if input.index("@", index) == index
-        r0 = (Current).new(input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure("@")
-        r0 = nil
-      end
-
-      node_cache[:current][start_index] = r0
-
-      return r0
-    end
-
-    module Symbol0
-    end
-
-    def _nt_symbol
-      start_index = index
-      if node_cache[:symbol].has_key?(index)
-        cached = node_cache[:symbol][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      if input.index(Regexp.new('[A-Za-z$_]'), index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
-        @index += 1
-      else
-        r1 = nil
-      end
-      s0 << r1
-      if r1
-        s2, i2 = [], index
-        loop do
-          if input.index(Regexp.new('[A-Za-z0-9$_]'), index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
-            @index += 1
-          else
-            r3 = nil
-          end
-          if r3
-            s2 << r3
-          else
-            break
-          end
-        end
-        r2 = SyntaxNode.new(input, i2...index, s2)
-        s0 << r2
-      end
-      if s0.last
-        r0 = (Symbol).new(input, i0...index, s0)
-        r0.extend(Symbol0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:symbol][start_index] = r0
-
-      return r0
-    end
-
-    def _nt_filter
-      start_index = index
-      if node_cache[:filter].has_key?(index)
-        cached = node_cache[:filter][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0 = index
-      r1 = _nt_field_access
-      if r1
-        r0 = r1
-        r0.extend(Filter)
-      else
-        r2 = _nt_boolean_filter
-        if r2
-          r0 = r2
-          r0.extend(Filter)
-        else
-          r3 = _nt_map_filter
-          if r3
-            r0 = r3
-            r0.extend(Filter)
-          else
-            r4 = _nt_sort_filter
+            r4 = _nt_atom
             if r4
               r0 = r4
-              r0.extend(Filter)
             else
               self.index = i0
               r0 = nil
@@ -245,434 +38,7 @@ module Siren
         end
       end
 
-      node_cache[:filter][start_index] = r0
-
-      return r0
-    end
-
-    module FieldAccess0
-    end
-
-    module FieldAccess1
-    end
-
-    def _nt_field_access
-      start_index = index
-      if node_cache[:field_access].has_key?(index)
-        cached = node_cache[:field_access][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0 = index
-      i1, s1 = index, []
-      if input.index(".", index) == index
-        r2 = (SyntaxNode).new(input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure(".")
-        r2 = nil
-      end
-      s1 << r2
-      if r2
-        i3 = index
-        r4 = _nt_symbol
-        if r4
-          r3 = r4
-        else
-          r5 = _nt_all
-          if r5
-            r3 = r5
-          else
-            self.index = i3
-            r3 = nil
-          end
-        end
-        s1 << r3
-      end
-      if s1.last
-        r1 = (SyntaxNode).new(input, i1...index, s1)
-        r1.extend(FieldAccess0)
-      else
-        self.index = i1
-        r1 = nil
-      end
-      if r1
-        r0 = r1
-        r0.extend(FieldAccess)
-      else
-        i6, s6 = index, []
-        if input.index("[", index) == index
-          r7 = (SyntaxNode).new(input, index...(index + 1))
-          @index += 1
-        else
-          terminal_parse_failure("[")
-          r7 = nil
-        end
-        s6 << r7
-        if r7
-          i8 = index
-          r9 = _nt_field_access_expression
-          if r9
-            r8 = r9
-          else
-            r10 = _nt_all
-            if r10
-              r8 = r10
-            else
-              self.index = i8
-              r8 = nil
-            end
-          end
-          s6 << r8
-          if r8
-            if input.index("]", index) == index
-              r11 = (SyntaxNode).new(input, index...(index + 1))
-              @index += 1
-            else
-              terminal_parse_failure("]")
-              r11 = nil
-            end
-            s6 << r11
-          end
-        end
-        if s6.last
-          r6 = (SyntaxNode).new(input, i6...index, s6)
-          r6.extend(FieldAccess1)
-        else
-          self.index = i6
-          r6 = nil
-        end
-        if r6
-          r0 = r6
-          r0.extend(FieldAccess)
-        else
-          self.index = i0
-          r0 = nil
-        end
-      end
-
-      node_cache[:field_access][start_index] = r0
-
-      return r0
-    end
-
-    module FieldAccessExpression0
-      def expression
-        elements[1]
-      end
-    end
-
-    module FieldAccessExpression1
-      def first
-        elements[0]
-      end
-
-      def others
-        elements[1]
-      end
-    end
-
-    def _nt_field_access_expression
-      start_index = index
-      if node_cache[:field_access_expression].has_key?(index)
-        cached = node_cache[:field_access_expression][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      r1 = _nt_expression
-      s0 << r1
-      if r1
-        s2, i2 = [], index
-        loop do
-          i3, s3 = index, []
-          if input.index(",", index) == index
-            r4 = (SyntaxNode).new(input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure(",")
-            r4 = nil
-          end
-          s3 << r4
-          if r4
-            r5 = _nt_expression
-            s3 << r5
-          end
-          if s3.last
-            r3 = (SyntaxNode).new(input, i3...index, s3)
-            r3.extend(FieldAccessExpression0)
-          else
-            self.index = i3
-            r3 = nil
-          end
-          if r3
-            s2 << r3
-          else
-            break
-          end
-        end
-        r2 = SyntaxNode.new(input, i2...index, s2)
-        s0 << r2
-      end
-      if s0.last
-        r0 = (FieldAccessExpression).new(input, i0...index, s0)
-        r0.extend(FieldAccessExpression1)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:field_access_expression][start_index] = r0
-
-      return r0
-    end
-
-    def _nt_all
-      start_index = index
-      if node_cache[:all].has_key?(index)
-        cached = node_cache[:all][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      if input.index("*", index) == index
-        r0 = (AllFilter).new(input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure("*")
-        r0 = nil
-      end
-
-      node_cache[:all][start_index] = r0
-
-      return r0
-    end
-
-    module BooleanFilter0
-      def boolean_expression
-        elements[1]
-      end
-
-    end
-
-    def _nt_boolean_filter
-      start_index = index
-      if node_cache[:boolean_filter].has_key?(index)
-        cached = node_cache[:boolean_filter][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      if input.index("[?", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 2))
-        @index += 2
-      else
-        terminal_parse_failure("[?")
-        r1 = nil
-      end
-      s0 << r1
-      if r1
-        r2 = _nt_boolean_expression
-        s0 << r2
-        if r2
-          if input.index("]", index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure("]")
-            r3 = nil
-          end
-          s0 << r3
-        end
-      end
-      if s0.last
-        r0 = (BooleanFilter).new(input, i0...index, s0)
-        r0.extend(BooleanFilter0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:boolean_filter][start_index] = r0
-
-      return r0
-    end
-
-    module MapFilter0
-      def expression
-        elements[1]
-      end
-
-    end
-
-    def _nt_map_filter
-      start_index = index
-      if node_cache[:map_filter].has_key?(index)
-        cached = node_cache[:map_filter][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      if input.index("[=", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 2))
-        @index += 2
-      else
-        terminal_parse_failure("[=")
-        r1 = nil
-      end
-      s0 << r1
-      if r1
-        r2 = _nt_expression
-        s0 << r2
-        if r2
-          if input.index("]", index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure("]")
-            r3 = nil
-          end
-          s0 << r3
-        end
-      end
-      if s0.last
-        r0 = (MapFilter).new(input, i0...index, s0)
-        r0.extend(MapFilter0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:map_filter][start_index] = r0
-
-      return r0
-    end
-
-    module SortFilter0
-      def sorter
-        elements[1]
-      end
-
-      def expression
-        elements[2]
-      end
-
-    end
-
-    def _nt_sort_filter
-      start_index = index
-      if node_cache[:sort_filter].has_key?(index)
-        cached = node_cache[:sort_filter][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      if input.index("[", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure("[")
-        r1 = nil
-      end
-      s0 << r1
-      if r1
-        r2 = _nt_sorter
-        s0 << r2
-        if r2
-          r3 = _nt_expression
-          s0 << r3
-          if r3
-            if input.index("]", index) == index
-              r4 = (SyntaxNode).new(input, index...(index + 1))
-              @index += 1
-            else
-              terminal_parse_failure("]")
-              r4 = nil
-            end
-            s0 << r4
-          end
-        end
-      end
-      if s0.last
-        r0 = (SortFilter).new(input, i0...index, s0)
-        r0.extend(SortFilter0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:sort_filter][start_index] = r0
-
-      return r0
-    end
-
-    module Sorter0
-      def space
-        elements[0]
-      end
-
-      def space
-        elements[2]
-      end
-    end
-
-    def _nt_sorter
-      start_index = index
-      if node_cache[:sorter].has_key?(index)
-        cached = node_cache[:sorter][index]
-        @index = cached.interval.end if cached
-        return cached
-      end
-
-      i0, s0 = index, []
-      r1 = _nt_space
-      s0 << r1
-      if r1
-        i2 = index
-        if input.index("/", index) == index
-          r3 = (SyntaxNode).new(input, index...(index + 1))
-          @index += 1
-        else
-          terminal_parse_failure("/")
-          r3 = nil
-        end
-        if r3
-          r2 = r3
-        else
-          if input.index("\\", index) == index
-            r4 = (SyntaxNode).new(input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure("\\")
-            r4 = nil
-          end
-          if r4
-            r2 = r4
-          else
-            self.index = i2
-            r2 = nil
-          end
-        end
-        s0 << r2
-        if r2
-          r5 = _nt_space
-          s0 << r5
-        end
-      end
-      if s0.last
-        r0 = (Sorter).new(input, i0...index, s0)
-        r0.extend(Sorter0)
-      else
-        self.index = i0
-        r0 = nil
-      end
-
-      node_cache[:sorter][start_index] = r0
+      node_cache[:expression][start_index] = r0
 
       return r0
     end
@@ -694,12 +60,17 @@ module Siren
         if r2
           r0 = r2
         else
-          r3 = _nt_boolean_atom
+          r3 = _nt_comparison
           if r3
             r0 = r3
           else
-            self.index = i0
-            r0 = nil
+            r4 = _nt_boolean_atom
+            if r4
+              r0 = r4
+            else
+              self.index = i0
+              r0 = nil
+            end
           end
         end
       end
@@ -789,7 +160,7 @@ module Siren
 
       i0 = index
       i1, s1 = index, []
-      r2 = _nt_boolean_atom
+      r2 = _nt_comparison
       s1 << r2
       if r2
         if input.index("&", index) == index
@@ -815,7 +186,7 @@ module Siren
       if r1
         r0 = r1
       else
-        r5 = _nt_boolean_atom
+        r5 = _nt_comparison
         if r5
           r0 = r5
         else
@@ -829,14 +200,7 @@ module Siren
       return r0
     end
 
-    module BooleanAtom0
-      def boolean_expression
-        elements[1]
-      end
-
-    end
-
-    module BooleanAtom1
+    module Comparison0
       def first
         elements[0]
       end
@@ -850,7 +214,58 @@ module Siren
       end
     end
 
-    module BooleanAtom2
+    def _nt_comparison
+      start_index = index
+      if node_cache[:comparison].has_key?(index)
+        cached = node_cache[:comparison][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0 = index
+      i1, s1 = index, []
+      r2 = _nt_expression
+      s1 << r2
+      if r2
+        r3 = _nt_comparator
+        s1 << r3
+        if r3
+          r4 = _nt_expression
+          s1 << r4
+        end
+      end
+      if s1.last
+        r1 = (Comparison).new(input, i1...index, s1)
+        r1.extend(Comparison0)
+      else
+        self.index = i1
+        r1 = nil
+      end
+      if r1
+        r0 = r1
+      else
+        r5 = _nt_boolean_atom
+        if r5
+          r0 = r5
+        else
+          self.index = i0
+          r0 = nil
+        end
+      end
+
+      node_cache[:comparison][start_index] = r0
+
+      return r0
+    end
+
+    module BooleanAtom0
+      def boolean_expression
+        elements[1]
+      end
+
+    end
+
+    module BooleanAtom1
       def space
         elements[0]
       end
@@ -906,24 +321,7 @@ module Siren
         if r3
           r2 = r3
         else
-          i7, s7 = index, []
-          r8 = _nt_expression
-          s7 << r8
-          if r8
-            r9 = _nt_comparator
-            s7 << r9
-            if r9
-              r10 = _nt_expression
-              s7 << r10
-            end
-          end
-          if s7.last
-            r7 = (SyntaxNode).new(input, i7...index, s7)
-            r7.extend(BooleanAtom1)
-          else
-            self.index = i7
-            r7 = nil
-          end
+          r7 = _nt_boolean
           if r7
             r2 = r7
           else
@@ -933,13 +331,13 @@ module Siren
         end
         s0 << r2
         if r2
-          r11 = _nt_space
-          s0 << r11
+          r8 = _nt_space
+          s0 << r8
         end
       end
       if s0.last
         r0 = (BooleanAtom).new(input, i0...index, s0)
-        r0.extend(BooleanAtom2)
+        r0.extend(BooleanAtom1)
       else
         self.index = i0
         r0 = nil
@@ -950,7 +348,7 @@ module Siren
       return r0
     end
 
-    module Additive0
+    module Sum0
       def first
         elements[0]
       end
@@ -964,17 +362,17 @@ module Siren
       end
     end
 
-    def _nt_additive
+    def _nt_sum
       start_index = index
-      if node_cache[:additive].has_key?(index)
-        cached = node_cache[:additive][index]
+      if node_cache[:sum].has_key?(index)
+        cached = node_cache[:sum][index]
         @index = cached.interval.end if cached
         return cached
       end
 
       i0 = index
       i1, s1 = index, []
-      r2 = _nt_multiplicative
+      r2 = _nt_product
       s1 << r2
       if r2
         i3 = index
@@ -992,13 +390,13 @@ module Siren
         end
         s1 << r3
         if r3
-          r6 = _nt_additive
+          r6 = _nt_sum
           s1 << r6
         end
       end
       if s1.last
-        r1 = (Additive).new(input, i1...index, s1)
-        r1.extend(Additive0)
+        r1 = (Sum).new(input, i1...index, s1)
+        r1.extend(Sum0)
       else
         self.index = i1
         r1 = nil
@@ -1006,7 +404,7 @@ module Siren
       if r1
         r0 = r1
       else
-        r7 = _nt_multiplicative
+        r7 = _nt_product
         if r7
           r0 = r7
         else
@@ -1015,12 +413,12 @@ module Siren
         end
       end
 
-      node_cache[:additive][start_index] = r0
+      node_cache[:sum][start_index] = r0
 
       return r0
     end
 
-    module Multiplicative0
+    module Product0
       def first
         elements[0]
       end
@@ -1034,17 +432,17 @@ module Siren
       end
     end
 
-    def _nt_multiplicative
+    def _nt_product
       start_index = index
-      if node_cache[:multiplicative].has_key?(index)
-        cached = node_cache[:multiplicative][index]
+      if node_cache[:product].has_key?(index)
+        cached = node_cache[:product][index]
         @index = cached.interval.end if cached
         return cached
       end
 
       i0 = index
       i1, s1 = index, []
-      r2 = _nt_atom
+      r2 = _nt_divmod
       s1 << r2
       if r2
         i3 = index
@@ -1062,13 +460,13 @@ module Siren
         end
         s1 << r3
         if r3
-          r6 = _nt_multiplicative
+          r6 = _nt_product
           s1 << r6
         end
       end
       if s1.last
-        r1 = (Multiplicative).new(input, i1...index, s1)
-        r1.extend(Multiplicative0)
+        r1 = (Product).new(input, i1...index, s1)
+        r1.extend(Product0)
       else
         self.index = i1
         r1 = nil
@@ -1076,7 +474,7 @@ module Siren
       if r1
         r0 = r1
       else
-        r7 = _nt_atom
+        r7 = _nt_divmod
         if r7
           r0 = r7
         else
@@ -1085,7 +483,67 @@ module Siren
         end
       end
 
-      node_cache[:multiplicative][start_index] = r0
+      node_cache[:product][start_index] = r0
+
+      return r0
+    end
+
+    module Divmod0
+      def first
+        elements[0]
+      end
+
+      def second
+        elements[2]
+      end
+    end
+
+    def _nt_divmod
+      start_index = index
+      if node_cache[:divmod].has_key?(index)
+        cached = node_cache[:divmod][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0 = index
+      i1, s1 = index, []
+      r2 = _nt_atom
+      s1 << r2
+      if r2
+        if input.index('%', index) == index
+          r3 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure('%')
+          r3 = nil
+        end
+        s1 << r3
+        if r3
+          r4 = _nt_divmod
+          s1 << r4
+        end
+      end
+      if s1.last
+        r1 = (Divmod).new(input, i1...index, s1)
+        r1.extend(Divmod0)
+      else
+        self.index = i1
+        r1 = nil
+      end
+      if r1
+        r0 = r1
+      else
+        r5 = _nt_atom
+        if r5
+          r0 = r5
+        else
+          self.index = i0
+          r0 = nil
+        end
+      end
+
+      node_cache[:divmod][start_index] = r0
 
       return r0
     end
@@ -2033,6 +1491,645 @@ module Siren
       r0 = SyntaxNode.new(input, i0...index, s0)
 
       node_cache[:space][start_index] = r0
+
+      return r0
+    end
+
+    module Query0
+      def identifier
+        elements[0]
+      end
+
+    end
+
+    def _nt_query
+      start_index = index
+      if node_cache[:query].has_key?(index)
+        cached = node_cache[:query][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      r1 = _nt_identifier
+      s0 << r1
+      if r1
+        s2, i2 = [], index
+        loop do
+          r3 = _nt_filter
+          if r3
+            s2 << r3
+          else
+            break
+          end
+        end
+        r2 = SyntaxNode.new(input, i2...index, s2)
+        s0 << r2
+      end
+      if s0.last
+        r0 = (Query).new(input, i0...index, s0)
+        r0.extend(Query0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:query][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_identifier
+      start_index = index
+      if node_cache[:identifier].has_key?(index)
+        cached = node_cache[:identifier][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0 = index
+      r1 = _nt_root
+      if r1
+        r0 = r1
+        r0.extend(Identifier)
+      else
+        r2 = _nt_current
+        if r2
+          r0 = r2
+          r0.extend(Identifier)
+        else
+          r3 = _nt_symbol
+          if r3
+            r0 = r3
+            r0.extend(Identifier)
+          else
+            self.index = i0
+            r0 = nil
+          end
+        end
+      end
+
+      node_cache[:identifier][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_root
+      start_index = index
+      if node_cache[:root].has_key?(index)
+        cached = node_cache[:root][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      if input.index("$", index) == index
+        r0 = (Root).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("$")
+        r0 = nil
+      end
+
+      node_cache[:root][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_current
+      start_index = index
+      if node_cache[:current].has_key?(index)
+        cached = node_cache[:current][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      if input.index("@", index) == index
+        r0 = (Current).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("@")
+        r0 = nil
+      end
+
+      node_cache[:current][start_index] = r0
+
+      return r0
+    end
+
+    module Symbol0
+    end
+
+    def _nt_symbol
+      start_index = index
+      if node_cache[:symbol].has_key?(index)
+        cached = node_cache[:symbol][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index(Regexp.new('[A-Za-z$_]'), index) == index
+        r1 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        s2, i2 = [], index
+        loop do
+          if input.index(Regexp.new('[A-Za-z0-9$_]'), index) == index
+            r3 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            r3 = nil
+          end
+          if r3
+            s2 << r3
+          else
+            break
+          end
+        end
+        r2 = SyntaxNode.new(input, i2...index, s2)
+        s0 << r2
+      end
+      if s0.last
+        r0 = (Symbol).new(input, i0...index, s0)
+        r0.extend(Symbol0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:symbol][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_filter
+      start_index = index
+      if node_cache[:filter].has_key?(index)
+        cached = node_cache[:filter][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0 = index
+      r1 = _nt_field_access
+      if r1
+        r0 = r1
+        r0.extend(Filter)
+      else
+        r2 = _nt_boolean_filter
+        if r2
+          r0 = r2
+          r0.extend(Filter)
+        else
+          r3 = _nt_map_filter
+          if r3
+            r0 = r3
+            r0.extend(Filter)
+          else
+            r4 = _nt_sort_filter
+            if r4
+              r0 = r4
+              r0.extend(Filter)
+            else
+              self.index = i0
+              r0 = nil
+            end
+          end
+        end
+      end
+
+      node_cache[:filter][start_index] = r0
+
+      return r0
+    end
+
+    module FieldAccess0
+    end
+
+    module FieldAccess1
+    end
+
+    def _nt_field_access
+      start_index = index
+      if node_cache[:field_access].has_key?(index)
+        cached = node_cache[:field_access][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0 = index
+      i1, s1 = index, []
+      if input.index(".", index) == index
+        r2 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure(".")
+        r2 = nil
+      end
+      s1 << r2
+      if r2
+        i3 = index
+        r4 = _nt_symbol
+        if r4
+          r3 = r4
+        else
+          r5 = _nt_all
+          if r5
+            r3 = r5
+          else
+            self.index = i3
+            r3 = nil
+          end
+        end
+        s1 << r3
+      end
+      if s1.last
+        r1 = (SyntaxNode).new(input, i1...index, s1)
+        r1.extend(FieldAccess0)
+      else
+        self.index = i1
+        r1 = nil
+      end
+      if r1
+        r0 = r1
+        r0.extend(FieldAccess)
+      else
+        i6, s6 = index, []
+        if input.index("[", index) == index
+          r7 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure("[")
+          r7 = nil
+        end
+        s6 << r7
+        if r7
+          i8 = index
+          r9 = _nt_field_access_expression
+          if r9
+            r8 = r9
+          else
+            r10 = _nt_all
+            if r10
+              r8 = r10
+            else
+              self.index = i8
+              r8 = nil
+            end
+          end
+          s6 << r8
+          if r8
+            if input.index("]", index) == index
+              r11 = (SyntaxNode).new(input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure("]")
+              r11 = nil
+            end
+            s6 << r11
+          end
+        end
+        if s6.last
+          r6 = (SyntaxNode).new(input, i6...index, s6)
+          r6.extend(FieldAccess1)
+        else
+          self.index = i6
+          r6 = nil
+        end
+        if r6
+          r0 = r6
+          r0.extend(FieldAccess)
+        else
+          self.index = i0
+          r0 = nil
+        end
+      end
+
+      node_cache[:field_access][start_index] = r0
+
+      return r0
+    end
+
+    module FieldAccessExpression0
+      def expression
+        elements[1]
+      end
+    end
+
+    module FieldAccessExpression1
+      def first
+        elements[0]
+      end
+
+      def others
+        elements[1]
+      end
+    end
+
+    def _nt_field_access_expression
+      start_index = index
+      if node_cache[:field_access_expression].has_key?(index)
+        cached = node_cache[:field_access_expression][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      r1 = _nt_expression
+      s0 << r1
+      if r1
+        s2, i2 = [], index
+        loop do
+          i3, s3 = index, []
+          if input.index(",", index) == index
+            r4 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure(",")
+            r4 = nil
+          end
+          s3 << r4
+          if r4
+            r5 = _nt_expression
+            s3 << r5
+          end
+          if s3.last
+            r3 = (SyntaxNode).new(input, i3...index, s3)
+            r3.extend(FieldAccessExpression0)
+          else
+            self.index = i3
+            r3 = nil
+          end
+          if r3
+            s2 << r3
+          else
+            break
+          end
+        end
+        r2 = SyntaxNode.new(input, i2...index, s2)
+        s0 << r2
+      end
+      if s0.last
+        r0 = (FieldAccessExpression).new(input, i0...index, s0)
+        r0.extend(FieldAccessExpression1)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:field_access_expression][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_all
+      start_index = index
+      if node_cache[:all].has_key?(index)
+        cached = node_cache[:all][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      if input.index("*", index) == index
+        r0 = (AllFilter).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("*")
+        r0 = nil
+      end
+
+      node_cache[:all][start_index] = r0
+
+      return r0
+    end
+
+    module BooleanFilter0
+      def boolean_expression
+        elements[1]
+      end
+
+    end
+
+    def _nt_boolean_filter
+      start_index = index
+      if node_cache[:boolean_filter].has_key?(index)
+        cached = node_cache[:boolean_filter][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index("[?", index) == index
+        r1 = (SyntaxNode).new(input, index...(index + 2))
+        @index += 2
+      else
+        terminal_parse_failure("[?")
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        r2 = _nt_boolean_expression
+        s0 << r2
+        if r2
+          if input.index("]", index) == index
+            r3 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure("]")
+            r3 = nil
+          end
+          s0 << r3
+        end
+      end
+      if s0.last
+        r0 = (BooleanFilter).new(input, i0...index, s0)
+        r0.extend(BooleanFilter0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:boolean_filter][start_index] = r0
+
+      return r0
+    end
+
+    module MapFilter0
+      def expression
+        elements[1]
+      end
+
+    end
+
+    def _nt_map_filter
+      start_index = index
+      if node_cache[:map_filter].has_key?(index)
+        cached = node_cache[:map_filter][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index("[=", index) == index
+        r1 = (SyntaxNode).new(input, index...(index + 2))
+        @index += 2
+      else
+        terminal_parse_failure("[=")
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        r2 = _nt_expression
+        s0 << r2
+        if r2
+          if input.index("]", index) == index
+            r3 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure("]")
+            r3 = nil
+          end
+          s0 << r3
+        end
+      end
+      if s0.last
+        r0 = (MapFilter).new(input, i0...index, s0)
+        r0.extend(MapFilter0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:map_filter][start_index] = r0
+
+      return r0
+    end
+
+    module SortFilter0
+      def sorter
+        elements[1]
+      end
+
+      def expression
+        elements[2]
+      end
+
+    end
+
+    def _nt_sort_filter
+      start_index = index
+      if node_cache[:sort_filter].has_key?(index)
+        cached = node_cache[:sort_filter][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index("[", index) == index
+        r1 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("[")
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        r2 = _nt_sorter
+        s0 << r2
+        if r2
+          r3 = _nt_expression
+          s0 << r3
+          if r3
+            if input.index("]", index) == index
+              r4 = (SyntaxNode).new(input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure("]")
+              r4 = nil
+            end
+            s0 << r4
+          end
+        end
+      end
+      if s0.last
+        r0 = (SortFilter).new(input, i0...index, s0)
+        r0.extend(SortFilter0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:sort_filter][start_index] = r0
+
+      return r0
+    end
+
+    module Sorter0
+      def space
+        elements[0]
+      end
+
+      def space
+        elements[2]
+      end
+    end
+
+    def _nt_sorter
+      start_index = index
+      if node_cache[:sorter].has_key?(index)
+        cached = node_cache[:sorter][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      r1 = _nt_space
+      s0 << r1
+      if r1
+        i2 = index
+        if input.index("/", index) == index
+          r3 = (SyntaxNode).new(input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure("/")
+          r3 = nil
+        end
+        if r3
+          r2 = r3
+        else
+          if input.index("\\", index) == index
+            r4 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure("\\")
+            r4 = nil
+          end
+          if r4
+            r2 = r4
+          else
+            self.index = i2
+            r2 = nil
+          end
+        end
+        s0 << r2
+        if r2
+          r5 = _nt_space
+          s0 << r5
+        end
+      end
+      if s0.last
+        r0 = (Sorter).new(input, i0...index, s0)
+        r0.extend(Sorter0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:sorter][start_index] = r0
 
       return r0
     end
