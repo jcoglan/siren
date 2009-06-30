@@ -1,0 +1,11 @@
+{
+    "people": [
+        {"name":  "John",   "age":  23},
+        {"name":  "Paul",   "age":  21},
+        {"name":  "George", "age":  12},
+        {"name":  "Ringo",  "age":  17}
+    ],
+    
+    "adults": {"$ref": "$.people[? @.age >= 18 ]"}
+}
+

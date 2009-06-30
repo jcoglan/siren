@@ -124,5 +124,9 @@ class SirenTest < Test::Unit::TestCase
                    "Sword of Honour", "The Lord of the Rings" ],
         Siren.query("$.store.book[/title][= @.title ]", fixtures(:store))
   end
+  
+  def test_embeded_queries
+    assert_equal %w[John Paul], fixtures(:beatles)['adults'].map { |b| b['name'] }
+  end
 end
 
