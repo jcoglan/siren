@@ -140,7 +140,7 @@ in a similar fashion to JavaScript expressions, and may contain strings, numbers
 * Subexpressions are delimited using parentheses <tt>(</tt> and <tt>)</tt>
 
 
-=== Field access filters
+=== Field access filter
 
 A field access filter selects a named field (either a key from a hash or an instance
 variable from any other type of object). Fields are accessed using the dot notation,
@@ -156,6 +156,15 @@ or the bracket notation with an expression evaluating to a string.
   
   Siren.query '$.name[ $.key ]', data
   #=> "bar"
+
+
+=== Array slice filter
+
+The array slice filter selects a subset of values from an array. The syntax is <tt>[a:b:s]</tt>,
+where +a+ is the start index, +b+ the end index and +s+ the step amount.
+
+  Siren.query '$[1:5:2]', %w[a b c d e f g h]
+  #=> ["b", "d", "f"]
 
 
 == Install

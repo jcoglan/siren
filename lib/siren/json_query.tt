@@ -137,7 +137,11 @@ module Siren
     end
     
     rule filter
-      (field_access / boolean_filter / map_filter / sort_filter) <Filter>
+      (slice_access / field_access / boolean_filter / map_filter / sort_filter) <Filter>
+    end
+    
+    rule slice_access
+      "[" head:number ":" tail:number ":" step:number "]" <SliceAccess>
     end
     
     rule field_access

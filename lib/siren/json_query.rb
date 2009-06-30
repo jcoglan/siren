@@ -1675,34 +1675,127 @@ module Siren
       end
 
       i0 = index
-      r1 = _nt_field_access
+      r1 = _nt_slice_access
       if r1
         r0 = r1
         r0.extend(Filter)
       else
-        r2 = _nt_boolean_filter
+        r2 = _nt_field_access
         if r2
           r0 = r2
           r0.extend(Filter)
         else
-          r3 = _nt_map_filter
+          r3 = _nt_boolean_filter
           if r3
             r0 = r3
             r0.extend(Filter)
           else
-            r4 = _nt_sort_filter
+            r4 = _nt_map_filter
             if r4
               r0 = r4
               r0.extend(Filter)
             else
-              self.index = i0
-              r0 = nil
+              r5 = _nt_sort_filter
+              if r5
+                r0 = r5
+                r0.extend(Filter)
+              else
+                self.index = i0
+                r0 = nil
+              end
             end
           end
         end
       end
 
       node_cache[:filter][start_index] = r0
+
+      return r0
+    end
+
+    module SliceAccess0
+      def head
+        elements[1]
+      end
+
+      def tail
+        elements[3]
+      end
+
+      def step
+        elements[5]
+      end
+
+    end
+
+    def _nt_slice_access
+      start_index = index
+      if node_cache[:slice_access].has_key?(index)
+        cached = node_cache[:slice_access][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index("[", index) == index
+        r1 = (SyntaxNode).new(input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("[")
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        r2 = _nt_number
+        s0 << r2
+        if r2
+          if input.index(":", index) == index
+            r3 = (SyntaxNode).new(input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure(":")
+            r3 = nil
+          end
+          s0 << r3
+          if r3
+            r4 = _nt_number
+            s0 << r4
+            if r4
+              if input.index(":", index) == index
+                r5 = (SyntaxNode).new(input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(":")
+                r5 = nil
+              end
+              s0 << r5
+              if r5
+                r6 = _nt_number
+                s0 << r6
+                if r6
+                  if input.index("]", index) == index
+                    r7 = (SyntaxNode).new(input, index...(index + 1))
+                    @index += 1
+                  else
+                    terminal_parse_failure("]")
+                    r7 = nil
+                  end
+                  s0 << r7
+                end
+              end
+            end
+          end
+        end
+      end
+      if s0.last
+        r0 = (SliceAccess).new(input, i0...index, s0)
+        r0.extend(SliceAccess0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:slice_access][start_index] = r0
 
       return r0
     end

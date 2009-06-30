@@ -36,6 +36,18 @@ module Siren
     module Filter
     end
     
+    class SliceAccess < Treetop::Runtime::SyntaxNode
+      def value(object, root, symbols, current = nil)
+        a, b, s = *[head, tail, step].map { |x| x.value(root, symbols, current) }
+        result = []
+        while a <= b
+          result << object[a]
+          a += s
+        end
+        result
+      end
+    end
+    
     module FieldAccess
       def index(object, root, symbols, current = nil)
         element = elements[1]
