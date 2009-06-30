@@ -113,7 +113,7 @@ yields the following Ruby object:
   }
 
 Siren supports the following sections of the JSONQuery language. A query is composed of
-an object selector followed by one or more filters.
+an object selector followed by zero or more filters.
 
 
 === Object selectors
@@ -151,9 +151,11 @@ or the bracket notation with an expression evaluating to a string.
     "name"  => { "foo" => "bar" }
   }
   
-  Siren.query '$.key', data       #=> "foo"
+  Siren.query '$.key', data
+  #=> "foo"
   
-  Siren.query '$.name[ $.key ]'   #=> "bar"
+  Siren.query '$.name[ $.key ]', data
+  #=> "bar"
 
 
 == Install
