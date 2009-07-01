@@ -108,7 +108,7 @@ module Siren
     class SortFilter < Treetop::Runtime::SyntaxNode
       def value(list, root, symbols, current = nil)
         result = list.sort_by { |object| expression.value(root, symbols, object) }
-        result.reverse! if sorter.text_value == "\\"
+        result = result.reverse if sorter.elements[1].text_value == "\\"
         result
       end
     end

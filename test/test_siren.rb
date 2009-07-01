@@ -126,6 +126,9 @@ class SirenTest < Test::Unit::TestCase
     assert_equal [ "Moby Dick", "Sayings of the Century",
                    "Sword of Honour", "The Lord of the Rings" ],
         Siren.query("$.store.book[/title][= @.title ]", fixtures(:store))
+    
+    assert_equal ["Nigel Rees", "J. R. R. Tolkien", "Herman Melville", "Evelyn Waugh"],
+        Siren.query("$.store.book[= author ][\\ @]", fixtures(:store))
   end
   
   def test_embeded_queries
