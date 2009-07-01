@@ -83,7 +83,7 @@ Queries may be run against Ruby objects of any type, and may also be used as val
 JSON documents to generate data during parsing. For example:
 
   # Run a filter against an array
-  adults = Siren.query '$[? @.age >= 18 ]', people
+  adults = Siren.query "$[? @.age >= 18 ]", people
   
   # Embed the query for expansion by the parser
   people = Siren.parse <<-JSON
@@ -143,20 +143,27 @@ operators are supported:
 
 === Field access filter
 
-A field access filter selects a named field (either a key from a hash or an instance
-variable from any other type of object). Fields are accessed using the dot notation,
-or the bracket notation with an expression evaluating to a string.
+A field access filter selects a named field from an object. Fields are accessed using the
+dot notation, or the bracket notation with an expression evaluating to a string. This
+filter does one of the following based on the object's type:
 
-  data = {
-    "key"   => "foo",
-    "name"  => { "foo" => "bar" }
-  }
-  
-  Siren.query '$.key', data
-  #=> "foo"
-  
-  Siren.query '$.name[ $.key ]', data
-  #=> "bar"
+* If the object is a +Hash+, the value for the named key is produced.
+* If the object has the named method, the value of that method call is returned.
+* Otherwise, the value of the named instance variable is produced.
+
+    data = {
+      "key"   => "foo",
+      "name"  => { "foo" => "bar" }
+    }
+    
+    Siren.query "$.key", data
+    #=> "foo"
+    
+    Siren.query "$.name[ $.key ]", data
+    #=> "bar"
+    
+    Siren.query "$.size", [3,4,5]
+    #=> 3
 
 
 === Array slice filter
@@ -164,8 +171,21 @@ or the bracket notation with an expression evaluating to a string.
 The array slice filter selects a subset of values from an array. The syntax is <tt>[a:b:s]</tt>,
 where +a+ is the start index, +b+ the end index and +s+ the step amount.
 
-  Siren.query '$[1:5:2]', %w[a b c d e f g h]
+  Siren.query "$[1:5:2]", %w[a b c d e f g h]
   #=> ["b", "d", "f"]
+
+
+=== Array selection filter
+
+The selection filter extracts a subset of an array using a predicate condition.
+Predicates are enclosed in <tt>[? ... ]</tt>, and within this block the symbol <tt>@</tt>
+refers to each member of the array in turn. For example:
+
+  Siren.query "$.strings[? @.length > 3]", {'strings' => %w[the quick brown fox]}
+  #=> ["quick", "brown"]
+  
+  Siren.query "$[? @ > 2 & @ <= 5]", [9,2,7,3,8,5]
+  #=> [3, 5]
 
 
 == Install
