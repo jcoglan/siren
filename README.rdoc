@@ -188,6 +188,28 @@ refers to each member of the array in turn. For example:
   #=> [3, 5]
 
 
+=== Array mapping filter
+
+Mappings work like Ruby's <tt>Enumerable#map</tt> method, producing a new array by
+applying some expression to the members of another. Mappings are expressed by enclosing
+the mapping expression in <tt>[= ... ]</tt>
+
+  Siren.query "$[= @[ 'upcase' ] ]", %w[the quick brown fox]
+  #=> ["THE", "QUICK", "BROWN", "FOX"]
+  
+  Siren.query "$[= @.length + 2]", %w[the quick brown fox]
+  #=> [5, 7, 7, 5]
+
+Just like other types of filters, mapping filters may use subqueries inside the
+main query:
+
+  Siren.query "$[= @[? @ > 4] ]", [ [2,9,4,3], [5,8,2], [3,6] ]
+  #=> [[9], [5, 8], [6]]
+  
+  Siren.query "$[= @[? @ > 4][0] + @.size ]", [ [2,9,4,3], [5,8,2], [3,6] ]
+  #=> [13, 8, 8]
+
+
 == Install
 
   sudo gem install siren
