@@ -130,8 +130,9 @@ An object selector is either a valid object ID, or the special symbols <tt>$</tt
 === Expressions
 
 Expressions are used within filters to generate data and perform comparisons. They work
-in a similar fashion to JavaScript expressions, and may contain strings, numbers, +true+,
-+false+, +null+ or other JSONQuery expressions. The following operators are supported:
+in a similar fashion to JavaScript expressions, and may contain strings (enclosed in single
+quotes), numbers, +true+, +false+, +null+ or other JSONQuery expressions. The following
+operators are supported:
 
 * Arithmetic: <tt>+</tt>, <tt>-</tt>, <tt>*</tt>, <tt>/</tt>, <tt>%</tt>
 * Comparison: <tt><</tt>, <tt><=</tt>, <tt>></tt>, <tt>>=</tt>

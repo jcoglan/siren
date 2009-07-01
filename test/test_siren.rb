@@ -80,6 +80,7 @@ class SirenTest < Test::Unit::TestCase
     assert_equal "FOO", Siren.query("$.upcase", "foo")
     assert_equal 99, Siren.query("$['key']", {"key" => 99})
     assert_equal 4, Siren.query("$.values[$.key]", {"key" => 2, "values" => [3,9,4,6]})
+    assert_equal 6, Siren.query("$['foo']", {'foo' => 6})
   end
   
   def test_array_filters
