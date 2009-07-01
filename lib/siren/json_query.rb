@@ -104,7 +104,7 @@ module Siren
       s1 << r2
       if r2
         if input.index("|", index) == index
-          r3 = (SyntaxNode).new(input, index...(index + 1))
+          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("|")
@@ -117,7 +117,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (Or).new(input, i1...index, s1)
+        r1 = instantiate_node(Or,input, i1...index, s1)
         r1.extend(OrExpression0)
       else
         self.index = i1
@@ -164,7 +164,7 @@ module Siren
       s1 << r2
       if r2
         if input.index("&", index) == index
-          r3 = (SyntaxNode).new(input, index...(index + 1))
+          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("&")
@@ -177,7 +177,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (And).new(input, i1...index, s1)
+        r1 = instantiate_node(And,input, i1...index, s1)
         r1.extend(AndExpression0)
       else
         self.index = i1
@@ -235,7 +235,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (Comparison).new(input, i1...index, s1)
+        r1 = instantiate_node(Comparison,input, i1...index, s1)
         r1.extend(Comparison0)
       else
         self.index = i1
@@ -290,7 +290,7 @@ module Siren
         i2 = index
         i3, s3 = index, []
         if input.index("(", index) == index
-          r4 = (SyntaxNode).new(input, index...(index + 1))
+          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("(")
@@ -302,7 +302,7 @@ module Siren
           s3 << r5
           if r5
             if input.index(")", index) == index
-              r6 = (SyntaxNode).new(input, index...(index + 1))
+              r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure(")")
@@ -312,7 +312,7 @@ module Siren
           end
         end
         if s3.last
-          r3 = (SyntaxNode).new(input, i3...index, s3)
+          r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
           r3.extend(BooleanAtom0)
         else
           self.index = i3
@@ -336,7 +336,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (BooleanAtom).new(input, i0...index, s0)
+        r0 = instantiate_node(BooleanAtom,input, i0...index, s0)
         r0.extend(BooleanAtom1)
       else
         self.index = i0
@@ -395,7 +395,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (Sum).new(input, i1...index, s1)
+        r1 = instantiate_node(Sum,input, i1...index, s1)
         r1.extend(Sum0)
       else
         self.index = i1
@@ -465,7 +465,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (Product).new(input, i1...index, s1)
+        r1 = instantiate_node(Product,input, i1...index, s1)
         r1.extend(Product0)
       else
         self.index = i1
@@ -512,7 +512,7 @@ module Siren
       s1 << r2
       if r2
         if input.index('%', index) == index
-          r3 = (SyntaxNode).new(input, index...(index + 1))
+          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure('%')
@@ -525,7 +525,7 @@ module Siren
         end
       end
       if s1.last
-        r1 = (Divmod).new(input, i1...index, s1)
+        r1 = instantiate_node(Divmod,input, i1...index, s1)
         r1.extend(Divmod0)
       else
         self.index = i1
@@ -580,7 +580,7 @@ module Siren
         i2 = index
         i3, s3 = index, []
         if input.index("(", index) == index
-          r4 = (SyntaxNode).new(input, index...(index + 1))
+          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("(")
@@ -592,7 +592,7 @@ module Siren
           s3 << r5
           if r5
             if input.index(")", index) == index
-              r6 = (SyntaxNode).new(input, index...(index + 1))
+              r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure(")")
@@ -602,7 +602,7 @@ module Siren
           end
         end
         if s3.last
-          r3 = (SyntaxNode).new(input, i3...index, s3)
+          r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
           r3.extend(Atom0)
         else
           self.index = i3
@@ -646,7 +646,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (Atom).new(input, i0...index, s0)
+        r0 = instantiate_node(Atom,input, i0...index, s0)
         r0.extend(Atom1)
       else
         self.index = i0
@@ -667,7 +667,7 @@ module Siren
       end
 
       if input.index("*", index) == index
-        r0 = (Multiplication).new(input, index...(index + 1))
+        r0 = instantiate_node(Multiplication,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("*")
@@ -688,7 +688,7 @@ module Siren
       end
 
       if input.index("/", index) == index
-        r0 = (Division).new(input, index...(index + 1))
+        r0 = instantiate_node(Division,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("/")
@@ -709,7 +709,7 @@ module Siren
       end
 
       if input.index("+", index) == index
-        r0 = (Addition).new(input, index...(index + 1))
+        r0 = instantiate_node(Addition,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("+")
@@ -730,7 +730,7 @@ module Siren
       end
 
       if input.index("-", index) == index
-        r0 = (Subtraction).new(input, index...(index + 1))
+        r0 = instantiate_node(Subtraction,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("-")
@@ -804,7 +804,7 @@ module Siren
       end
 
       if input.index("=", index) == index
-        r0 = (Equal).new(input, index...(index + 1))
+        r0 = instantiate_node(Equal,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("=")
@@ -825,7 +825,7 @@ module Siren
       end
 
       if input.index("!=", index) == index
-        r0 = (NotEqual).new(input, index...(index + 2))
+        r0 = instantiate_node(NotEqual,input, index...(index + 2))
         @index += 2
       else
         terminal_parse_failure("!=")
@@ -846,7 +846,7 @@ module Siren
       end
 
       if input.index("<", index) == index
-        r0 = (LessThan).new(input, index...(index + 1))
+        r0 = instantiate_node(LessThan,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("<")
@@ -867,7 +867,7 @@ module Siren
       end
 
       if input.index("<=", index) == index
-        r0 = (LessThanOrEqual).new(input, index...(index + 2))
+        r0 = instantiate_node(LessThanOrEqual,input, index...(index + 2))
         @index += 2
       else
         terminal_parse_failure("<=")
@@ -888,7 +888,7 @@ module Siren
       end
 
       if input.index(">", index) == index
-        r0 = (GreaterThan).new(input, index...(index + 1))
+        r0 = instantiate_node(GreaterThan,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure(">")
@@ -909,7 +909,7 @@ module Siren
       end
 
       if input.index(">=", index) == index
-        r0 = (GreaterThanOrEqual).new(input, index...(index + 2))
+        r0 = instantiate_node(GreaterThanOrEqual,input, index...(index + 2))
         @index += 2
       else
         terminal_parse_failure(">=")
@@ -955,7 +955,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("'", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("'")
@@ -968,7 +968,7 @@ module Siren
           i3 = index
           i4, s4 = index, []
           if input.index('\\', index) == index
-            r5 = (SyntaxNode).new(input, index...(index + 1))
+            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure('\\')
@@ -978,7 +978,7 @@ module Siren
           if r5
             i6 = index
             if input.index("'", index) == index
-              r7 = (SyntaxNode).new(input, index...(index + 1))
+              r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure("'")
@@ -988,7 +988,7 @@ module Siren
               r6 = r7
             else
               if input.index('\\', index) == index
-                r8 = (SyntaxNode).new(input, index...(index + 1))
+                r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
                 @index += 1
               else
                 terminal_parse_failure('\\')
@@ -998,7 +998,7 @@ module Siren
                 r6 = r8
               else
                 if input.index('/', index) == index
-                  r9 = (SyntaxNode).new(input, index...(index + 1))
+                  r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
                   @index += 1
                 else
                   terminal_parse_failure('/')
@@ -1008,7 +1008,7 @@ module Siren
                   r6 = r9
                 else
                   if input.index('b', index) == index
-                    r10 = (SyntaxNode).new(input, index...(index + 1))
+                    r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
                     @index += 1
                   else
                     terminal_parse_failure('b')
@@ -1018,7 +1018,7 @@ module Siren
                     r6 = r10
                   else
                     if input.index('f', index) == index
-                      r11 = (SyntaxNode).new(input, index...(index + 1))
+                      r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
                       @index += 1
                     else
                       terminal_parse_failure('f')
@@ -1028,7 +1028,7 @@ module Siren
                       r6 = r11
                     else
                       if input.index('n', index) == index
-                        r12 = (SyntaxNode).new(input, index...(index + 1))
+                        r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
                         @index += 1
                       else
                         terminal_parse_failure('n')
@@ -1038,7 +1038,7 @@ module Siren
                         r6 = r12
                       else
                         if input.index('r', index) == index
-                          r13 = (SyntaxNode).new(input, index...(index + 1))
+                          r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
                           @index += 1
                         else
                           terminal_parse_failure('r')
@@ -1048,7 +1048,7 @@ module Siren
                           r6 = r13
                         else
                           if input.index('t', index) == index
-                            r14 = (SyntaxNode).new(input, index...(index + 1))
+                            r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
                             @index += 1
                           else
                             terminal_parse_failure('t')
@@ -1059,7 +1059,7 @@ module Siren
                           else
                             i15, s15 = index, []
                             if input.index('u', index) == index
-                              r16 = (SyntaxNode).new(input, index...(index + 1))
+                              r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
                               @index += 1
                             else
                               terminal_parse_failure('u')
@@ -1083,7 +1083,7 @@ module Siren
                               end
                             end
                             if s15.last
-                              r15 = (SyntaxNode).new(input, i15...index, s15)
+                              r15 = instantiate_node(SyntaxNode,input, i15...index, s15)
                               r15.extend(String0)
                             else
                               self.index = i15
@@ -1106,7 +1106,7 @@ module Siren
             s4 << r6
           end
           if s4.last
-            r4 = (SyntaxNode).new(input, i4...index, s4)
+            r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
             r4.extend(String1)
           else
             self.index = i4
@@ -1116,7 +1116,7 @@ module Siren
             r3 = r4
           else
             if input.index(Regexp.new('[^\\\'\\\\]'), index) == index
-              r21 = (SyntaxNode).new(input, index...(index + 1))
+              r21 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               r21 = nil
@@ -1134,11 +1134,11 @@ module Siren
             break
           end
         end
-        r2 = SyntaxNode.new(input, i2...index, s2)
+        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
         s0 << r2
         if r2
           if input.index("'", index) == index
-            r22 = (SyntaxNode).new(input, index...(index + 1))
+            r22 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure("'")
@@ -1148,7 +1148,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (String).new(input, i0...index, s0)
+        r0 = instantiate_node(String,input, i0...index, s0)
         r0.extend(String2)
       else
         self.index = i0
@@ -1182,7 +1182,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("-", index) == index
-        r2 = (SyntaxNode).new(input, index...(index + 1))
+        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("-")
@@ -1191,13 +1191,13 @@ module Siren
       if r2
         r1 = r2
       else
-        r1 = SyntaxNode.new(input, index...index)
+        r1 = instantiate_node(SyntaxNode,input, index...index)
       end
       s0 << r1
       if r1
         i3 = index
         if input.index("0", index) == index
-          r4 = (SyntaxNode).new(input, index...(index + 1))
+          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("0")
@@ -1208,7 +1208,7 @@ module Siren
         else
           i5, s5 = index, []
           if input.index(Regexp.new('[1-9]'), index) == index
-            r6 = (SyntaxNode).new(input, index...(index + 1))
+            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             r6 = nil
@@ -1224,11 +1224,11 @@ module Siren
                 break
               end
             end
-            r7 = SyntaxNode.new(input, i7...index, s7)
+            r7 = instantiate_node(SyntaxNode,input, i7...index, s7)
             s5 << r7
           end
           if s5.last
-            r5 = (SyntaxNode).new(input, i5...index, s5)
+            r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
             r5.extend(Number0)
           else
             self.index = i5
@@ -1245,7 +1245,7 @@ module Siren
         if r3
           i10, s10 = index, []
           if input.index(".", index) == index
-            r11 = (SyntaxNode).new(input, index...(index + 1))
+            r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure(".")
@@ -1266,12 +1266,12 @@ module Siren
               self.index = i12
               r12 = nil
             else
-              r12 = SyntaxNode.new(input, i12...index, s12)
+              r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
             end
             s10 << r12
           end
           if s10.last
-            r10 = (SyntaxNode).new(input, i10...index, s10)
+            r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
             r10.extend(Number1)
           else
             self.index = i10
@@ -1280,13 +1280,13 @@ module Siren
           if r10
             r9 = r10
           else
-            r9 = SyntaxNode.new(input, index...index)
+            r9 = instantiate_node(SyntaxNode,input, index...index)
           end
           s0 << r9
           if r9
             i15, s15 = index, []
             if input.index(Regexp.new('[eE]'), index) == index
-              r16 = (SyntaxNode).new(input, index...(index + 1))
+              r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               r16 = nil
@@ -1294,7 +1294,7 @@ module Siren
             s15 << r16
             if r16
               if input.index(Regexp.new('[+-]'), index) == index
-                r18 = (SyntaxNode).new(input, index...(index + 1))
+                r18 = instantiate_node(SyntaxNode,input, index...(index + 1))
                 @index += 1
               else
                 r18 = nil
@@ -1302,7 +1302,7 @@ module Siren
               if r18
                 r17 = r18
               else
-                r17 = SyntaxNode.new(input, index...index)
+                r17 = instantiate_node(SyntaxNode,input, index...index)
               end
               s15 << r17
               if r17
@@ -1319,13 +1319,13 @@ module Siren
                   self.index = i19
                   r19 = nil
                 else
-                  r19 = SyntaxNode.new(input, i19...index, s19)
+                  r19 = instantiate_node(SyntaxNode,input, i19...index, s19)
                 end
                 s15 << r19
               end
             end
             if s15.last
-              r15 = (SyntaxNode).new(input, i15...index, s15)
+              r15 = instantiate_node(SyntaxNode,input, i15...index, s15)
               r15.extend(Number2)
             else
               self.index = i15
@@ -1334,14 +1334,14 @@ module Siren
             if r15
               r14 = r15
             else
-              r14 = SyntaxNode.new(input, index...index)
+              r14 = instantiate_node(SyntaxNode,input, index...index)
             end
             s0 << r14
           end
         end
       end
       if s0.last
-        r0 = (Number).new(input, i0...index, s0)
+        r0 = instantiate_node(Number,input, i0...index, s0)
         r0.extend(Number3)
       else
         self.index = i0
@@ -1362,7 +1362,7 @@ module Siren
       end
 
       if input.index(Regexp.new('[0-9]'), index) == index
-        r0 = (SyntaxNode).new(input, index...(index + 1))
+        r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         r0 = nil
@@ -1411,7 +1411,7 @@ module Siren
       end
 
       if input.index("true", index) == index
-        r0 = (True).new(input, index...(index + 4))
+        r0 = instantiate_node(True,input, index...(index + 4))
         @index += 4
       else
         terminal_parse_failure("true")
@@ -1432,7 +1432,7 @@ module Siren
       end
 
       if input.index("false", index) == index
-        r0 = (False).new(input, index...(index + 5))
+        r0 = instantiate_node(False,input, index...(index + 5))
         @index += 5
       else
         terminal_parse_failure("false")
@@ -1453,7 +1453,7 @@ module Siren
       end
 
       if input.index("null", index) == index
-        r0 = (Null).new(input, index...(index + 4))
+        r0 = instantiate_node(Null,input, index...(index + 4))
         @index += 4
       else
         terminal_parse_failure("null")
@@ -1476,7 +1476,7 @@ module Siren
       s0, i0 = [], index
       loop do
         if input.index(" ", index) == index
-          r1 = (SyntaxNode).new(input, index...(index + 1))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure(" ")
@@ -1488,7 +1488,7 @@ module Siren
           break
         end
       end
-      r0 = SyntaxNode.new(input, i0...index, s0)
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
 
       node_cache[:space][start_index] = r0
 
@@ -1523,11 +1523,11 @@ module Siren
             break
           end
         end
-        r2 = SyntaxNode.new(input, i2...index, s2)
+        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
         s0 << r2
       end
       if s0.last
-        r0 = (Query).new(input, i0...index, s0)
+        r0 = instantiate_node(Query,input, i0...index, s0)
         r0.extend(Query0)
       else
         self.index = i0
@@ -1583,7 +1583,7 @@ module Siren
       end
 
       if input.index("$", index) == index
-        r0 = (Root).new(input, index...(index + 1))
+        r0 = instantiate_node(Root,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("$")
@@ -1604,7 +1604,7 @@ module Siren
       end
 
       if input.index("@", index) == index
-        r0 = (Current).new(input, index...(index + 1))
+        r0 = instantiate_node(Current,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("@")
@@ -1629,7 +1629,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index(Regexp.new('[A-Za-z$_]'), index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         r1 = nil
@@ -1639,7 +1639,7 @@ module Siren
         s2, i2 = [], index
         loop do
           if input.index(Regexp.new('[A-Za-z0-9$_]'), index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             r3 = nil
@@ -1650,11 +1650,11 @@ module Siren
             break
           end
         end
-        r2 = SyntaxNode.new(input, i2...index, s2)
+        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
         s0 << r2
       end
       if s0.last
-        r0 = (Symbol).new(input, i0...index, s0)
+        r0 = instantiate_node(Symbol,input, i0...index, s0)
         r0.extend(Symbol0)
       else
         self.index = i0
@@ -1738,7 +1738,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("[", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("[")
@@ -1750,7 +1750,7 @@ module Siren
         s0 << r2
         if r2
           if input.index(":", index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure(":")
@@ -1762,7 +1762,7 @@ module Siren
             s0 << r4
             if r4
               if input.index(":", index) == index
-                r5 = (SyntaxNode).new(input, index...(index + 1))
+                r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
                 @index += 1
               else
                 terminal_parse_failure(":")
@@ -1774,7 +1774,7 @@ module Siren
                 s0 << r6
                 if r6
                   if input.index("]", index) == index
-                    r7 = (SyntaxNode).new(input, index...(index + 1))
+                    r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
                     @index += 1
                   else
                     terminal_parse_failure("]")
@@ -1788,7 +1788,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (SliceAccess).new(input, i0...index, s0)
+        r0 = instantiate_node(SliceAccess,input, i0...index, s0)
         r0.extend(SliceAccess0)
       else
         self.index = i0
@@ -1817,7 +1817,7 @@ module Siren
       i0 = index
       i1, s1 = index, []
       if input.index(".", index) == index
-        r2 = (SyntaxNode).new(input, index...(index + 1))
+        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure(".")
@@ -1841,7 +1841,7 @@ module Siren
         s1 << r3
       end
       if s1.last
-        r1 = (SyntaxNode).new(input, i1...index, s1)
+        r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
         r1.extend(FieldAccess0)
       else
         self.index = i1
@@ -1853,7 +1853,7 @@ module Siren
       else
         i6, s6 = index, []
         if input.index("[", index) == index
-          r7 = (SyntaxNode).new(input, index...(index + 1))
+          r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("[")
@@ -1877,7 +1877,7 @@ module Siren
           s6 << r8
           if r8
             if input.index("]", index) == index
-              r11 = (SyntaxNode).new(input, index...(index + 1))
+              r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure("]")
@@ -1887,7 +1887,7 @@ module Siren
           end
         end
         if s6.last
-          r6 = (SyntaxNode).new(input, i6...index, s6)
+          r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
           r6.extend(FieldAccess1)
         else
           self.index = i6
@@ -1939,7 +1939,7 @@ module Siren
         loop do
           i3, s3 = index, []
           if input.index(",", index) == index
-            r4 = (SyntaxNode).new(input, index...(index + 1))
+            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure(",")
@@ -1951,7 +1951,7 @@ module Siren
             s3 << r5
           end
           if s3.last
-            r3 = (SyntaxNode).new(input, i3...index, s3)
+            r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
             r3.extend(FieldAccessExpression0)
           else
             self.index = i3
@@ -1963,11 +1963,11 @@ module Siren
             break
           end
         end
-        r2 = SyntaxNode.new(input, i2...index, s2)
+        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
         s0 << r2
       end
       if s0.last
-        r0 = (FieldAccessExpression).new(input, i0...index, s0)
+        r0 = instantiate_node(FieldAccessExpression,input, i0...index, s0)
         r0.extend(FieldAccessExpression1)
       else
         self.index = i0
@@ -1988,7 +1988,7 @@ module Siren
       end
 
       if input.index("*", index) == index
-        r0 = (AllFilter).new(input, index...(index + 1))
+        r0 = instantiate_node(AllFilter,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("*")
@@ -2017,7 +2017,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("[?", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 2))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
         @index += 2
       else
         terminal_parse_failure("[?")
@@ -2029,7 +2029,7 @@ module Siren
         s0 << r2
         if r2
           if input.index("]", index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure("]")
@@ -2039,7 +2039,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (BooleanFilter).new(input, i0...index, s0)
+        r0 = instantiate_node(BooleanFilter,input, i0...index, s0)
         r0.extend(BooleanFilter0)
       else
         self.index = i0
@@ -2068,7 +2068,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("[=", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 2))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
         @index += 2
       else
         terminal_parse_failure("[=")
@@ -2080,7 +2080,7 @@ module Siren
         s0 << r2
         if r2
           if input.index("]", index) == index
-            r3 = (SyntaxNode).new(input, index...(index + 1))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure("]")
@@ -2090,7 +2090,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (MapFilter).new(input, i0...index, s0)
+        r0 = instantiate_node(MapFilter,input, i0...index, s0)
         r0.extend(MapFilter0)
       else
         self.index = i0
@@ -2123,7 +2123,7 @@ module Siren
 
       i0, s0 = index, []
       if input.index("[", index) == index
-        r1 = (SyntaxNode).new(input, index...(index + 1))
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure("[")
@@ -2138,7 +2138,7 @@ module Siren
           s0 << r3
           if r3
             if input.index("]", index) == index
-              r4 = (SyntaxNode).new(input, index...(index + 1))
+              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure("]")
@@ -2149,7 +2149,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (SortFilter).new(input, i0...index, s0)
+        r0 = instantiate_node(SortFilter,input, i0...index, s0)
         r0.extend(SortFilter0)
       else
         self.index = i0
@@ -2185,7 +2185,7 @@ module Siren
       if r1
         i2 = index
         if input.index("/", index) == index
-          r3 = (SyntaxNode).new(input, index...(index + 1))
+          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure("/")
@@ -2195,7 +2195,7 @@ module Siren
           r2 = r3
         else
           if input.index("\\", index) == index
-            r4 = (SyntaxNode).new(input, index...(index + 1))
+            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure("\\")
@@ -2215,7 +2215,7 @@ module Siren
         end
       end
       if s0.last
-        r0 = (Sorter).new(input, i0...index, s0)
+        r0 = instantiate_node(Sorter,input, i0...index, s0)
         r0.extend(Sorter0)
       else
         self.index = i0
