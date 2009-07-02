@@ -122,13 +122,20 @@ class SirenTest < Test::Unit::TestCase
     assert_equal [ "Sayings of the Century", "Sword of Honour",
                    "Moby Dick", "The Lord of the Rings" ],
         Siren.query("$.store.book[=title ]", fixtures(:store))
-    
+  end
+  
+  def test_sorting
     assert_equal [ "Moby Dick", "Sayings of the Century",
                    "Sword of Honour", "The Lord of the Rings" ],
         Siren.query("$.store.book[/title][= @.title ]", fixtures(:store))
     
     assert_equal ["Nigel Rees", "J. R. R. Tolkien", "Herman Melville", "Evelyn Waugh"],
         Siren.query("$.store.book[= author ][\\ @]", fixtures(:store))
+    
+    assert_equal [ "Jonny Greenwood", "Colin Greenwood", "Ed O'Brien",
+                   "Phil Selway", "Thom Yorke" ],
+        Siren.query("$[ /last, \\ @.first]", fixtures(:names)).
+        map { |n| "#{ n['first'] } #{ n['last'] }" }
   end
   
   def test_embeded_queries

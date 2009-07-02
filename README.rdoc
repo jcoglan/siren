@@ -118,13 +118,16 @@ an object selector followed by zero or more filters.
 
 === Object selectors
 
-An object selector is either a valid object ID, or the special symbols <tt>$</tt> or <tt>@</tt>.
+An object selector is either a valid object ID, or the special symbols <tt>$</tt>
+or <tt>@</tt>.
 
-* An object ID is a letter followed by zero or more letters, numbers or underscores. Use
-  of an ID produces a reference to the object with that +id+ property, as illustrated above.
-* <tt>$</tt> represents the root object the query is being run against, or the root of the JSON
-  document currently being parsed.
-* <tt>@</tt> represents the current object in a looping operation, such as a map, sort or filter.
+* An object ID is a letter followed by zero or more letters, numbers or underscores.
+  Use of an ID produces a reference to the object with that +id+ property, as illustrated
+  above.
+* <tt>$</tt> represents the root object the query is being run against, or the root of
+  the JSON document currently being parsed.
+* <tt>@</tt> represents the current object in a looping operation, such as a map, sort
+  or filter.
 
 
 === Expressions
@@ -175,7 +178,7 @@ where +a+ is the start index, +b+ the end index and +s+ the step amount.
   #=> ["b", "d", "f"]
 
 
-=== Array selection filter
+=== Selection filter
 
 The selection filter extracts a subset of an array using a predicate condition.
 Predicates are enclosed in <tt>[? ... ]</tt>, and within this block the symbol <tt>@</tt>
@@ -188,7 +191,7 @@ refers to each member of the array in turn. For example:
   #=> [3, 5]
 
 
-=== Array mapping filter
+=== Mapping filter
 
 Mappings work like Ruby's <tt>Enumerable#map</tt> method, producing a new array by
 applying some expression to the members of another. Mappings are expressed by enclosing
@@ -208,6 +211,34 @@ main query:
   
   Siren.query "$[= @[? @ > 4][0] + @.size ]", [ [2,9,4,3], [5,8,2], [3,6] ]
   #=> [13, 8, 8]
+
+
+=== Sorting filter
+
+The sorting filter returns a sorted version of the array it is operating on. The sort
+must contain one or more comma-separated expressions to use to compare the items in the
+array, and each expression must specify ascending (<tt>/</tt>) or descending (<tt>\\</tt>)
+order. Expressions are prioritized from left to right. For example, the following sorts
+the people in the list in ascending order by last name, then in descending order by first
+name for people with the same last name:
+
+  people = Siren.parse <<-JSON
+          [
+              {"first": "Thom",   "last": "Yorke"},
+              {"first": "Jonny",  "last": "Greenwood"},
+              {"first": "Ed",     "last": "O'Brien"},
+              {"first": "Colin",  "last": "Greenwood"},
+              {"first": "Phil",   "last": "Selway"}
+          ]
+  JSON
+  
+  Siren.query "$[ /@.last, \\@.first ]", people
+  
+  #  => [ { "last"=>"Greenwood",  "first"=>"Jonny"},
+  #       { "last"=>"Greenwood",  "first"=>"Colin"},
+  #       { "last"=>"O'Brien",    "first"=>"Ed"},
+  #       { "last"=>"Selway",     "first"=>"Phil"},
+  #       { "last"=>"Yorke",      "first"=>"Thom"} ]
 
 
 == Install

@@ -165,7 +165,7 @@ module Siren
     end
     
     rule sort_filter
-      "[" sorter expression "]" <SortFilter>
+      "[" first:(sorter expression) others:("," sorter expression)* "]" <SortFilter>
     end
     
     rule sorter

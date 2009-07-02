@@ -107,13 +107,28 @@ module Siren
     
     class SortFilter < Treetop::Runtime::SyntaxNode
       def value(list, root, symbols, current = nil)
-        result = list.sort_by { |object| expression.value(root, symbols, object) }
-        result = result.reverse if sorter.elements[1].text_value == "\\"
-        result
+        sorters = [[first.expression, first.sorter]] +
+                  others.elements.map { |e| [e.expression, e.sorter] }
+        
+        list.sort do |a, b|
+          sorters.inject(0) do |outcome, sorter|
+            if outcome.nonzero?
+              outcome
+            else
+              f, g = sorter[0].value(root, symbols, a), sorter[0].value(root, symbols, b)
+              sorter[1].value * (f <=> g)
+            end
+          end
+        end
       end
     end
     
     class Sorter < Treetop::Runtime::SyntaxNode
+      ORDERS = {"/" => 1, "\\" => -1}
+      
+      def value
+        ORDERS[elements[1].text_value]
+      end
     end
     
     class And < Treetop::Runtime::SyntaxNode

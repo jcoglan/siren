@@ -2104,10 +2104,30 @@ module Siren
 
     module SortFilter0
       def sorter
+        elements[0]
+      end
+
+      def expression
+        elements[1]
+      end
+    end
+
+    module SortFilter1
+      def sorter
         elements[1]
       end
 
       def expression
+        elements[2]
+      end
+    end
+
+    module SortFilter2
+      def first
+        elements[1]
+      end
+
+      def others
         elements[2]
       end
 
@@ -2131,26 +2151,71 @@ module Siren
       end
       s0 << r1
       if r1
-        r2 = _nt_sorter
+        i2, s2 = index, []
+        r3 = _nt_sorter
+        s2 << r3
+        if r3
+          r4 = _nt_expression
+          s2 << r4
+        end
+        if s2.last
+          r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+          r2.extend(SortFilter0)
+        else
+          self.index = i2
+          r2 = nil
+        end
         s0 << r2
         if r2
-          r3 = _nt_expression
-          s0 << r3
-          if r3
+          s5, i5 = [], index
+          loop do
+            i6, s6 = index, []
+            if input.index(",", index) == index
+              r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure(",")
+              r7 = nil
+            end
+            s6 << r7
+            if r7
+              r8 = _nt_sorter
+              s6 << r8
+              if r8
+                r9 = _nt_expression
+                s6 << r9
+              end
+            end
+            if s6.last
+              r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+              r6.extend(SortFilter1)
+            else
+              self.index = i6
+              r6 = nil
+            end
+            if r6
+              s5 << r6
+            else
+              break
+            end
+          end
+          r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
+          s0 << r5
+          if r5
             if input.index("]", index) == index
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure("]")
-              r4 = nil
+              r10 = nil
             end
-            s0 << r4
+            s0 << r10
           end
         end
       end
       if s0.last
         r0 = instantiate_node(SortFilter,input, i0...index, s0)
-        r0.extend(SortFilter0)
+        r0.extend(SortFilter2)
       else
         self.index = i0
         r0 = nil
