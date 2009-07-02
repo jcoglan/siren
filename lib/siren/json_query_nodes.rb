@@ -1,7 +1,7 @@
 module Siren
   module JsonQuery
     
-    class Query < Treetop::Runtime::SyntaxNode
+    module Query
       def value(root, symbols, current = nil)
         object = identifier.value(root, symbols, current)
         filters.inject(object) { |value, filter| filter.value(value, root, symbols, current) }
@@ -15,19 +15,19 @@ module Siren
     module Identifier
     end
     
-    class Root < Treetop::Runtime::SyntaxNode
+    module Root
       def value(root, symbols, current = nil)
         root
       end
     end
     
-    class Current < Treetop::Runtime::SyntaxNode
+    module Current
       def value(root, symbols, current = nil)
         current
       end
     end
     
-    class Symbol < Treetop::Runtime::SyntaxNode
+    module Symbol
       def value(root, symbols, current = nil)
         symbols[text_value] || FieldAccess.access(current, text_value)
       end
@@ -36,7 +36,7 @@ module Siren
     module Filter
     end
     
-    class SliceAccess < Treetop::Runtime::SyntaxNode
+    module SliceAccess
       def value(object, root, symbols, current = nil)
         a, b, s = *[head, tail, step].map { |x| x.value(root, symbols, current) }
         result = []
@@ -76,20 +76,20 @@ module Siren
       end
     end
     
-    class FieldAccessExpression < Treetop::Runtime::SyntaxNode
+    module FieldAccessExpression
       def value(root, symbols, current = nil)
         exprs = [first] + others.elements.map { |e| e.expression }
         exprs.map { |e| e.value(root, symbols, current) }
       end
     end
     
-    class AllFilter < Treetop::Runtime::SyntaxNode
+    module AllFilter
       def value(root, symbols, current = nil)
         [:*]
       end
     end
     
-    class BooleanFilter < Treetop::Runtime::SyntaxNode
+    module BooleanFilter
       def value(list, root, symbols, current = nil)
         list.select do |object|
           boolean_expression.value(root, symbols, object)
@@ -97,7 +97,7 @@ module Siren
       end
     end
     
-    class MapFilter < Treetop::Runtime::SyntaxNode
+    module MapFilter
       def value(list, root, symbols, current = nil)
         list.map do |object|
           expression.value(root, symbols, object)
@@ -105,7 +105,7 @@ module Siren
       end
     end
     
-    class SortFilter < Treetop::Runtime::SyntaxNode
+    module SortFilter
       def value(list, root, symbols, current = nil)
         sorters = [[first.expression, first.sorter]] +
                   others.elements.map { |e| [e.expression, e.sorter] }
@@ -123,7 +123,7 @@ module Siren
       end
     end
     
-    class Sorter < Treetop::Runtime::SyntaxNode
+    module Sorter
       ORDERS = {"/" => 1, "\\" => -1}
       
       def value
@@ -131,25 +131,25 @@ module Siren
       end
     end
     
-    class And < Treetop::Runtime::SyntaxNode
+    module And
       def value(root, symbols, current = nil)
         first.value(root, symbols, current) && second.value(root, symbols, current)
       end
     end
     
-    class Or < Treetop::Runtime::SyntaxNode
+    module Or
       def value(root, symbols, current = nil)
         first.value(root, symbols, current) || second.value(root, symbols, current)
       end
     end
     
-    class Comparison < Treetop::Runtime::SyntaxNode
+    module Comparison
       def value(root, symbols, current = nil)
         comparator.value(first.value(root, symbols, current), second.value(root, symbols, current))
       end
     end
     
-    class BooleanAtom < Treetop::Runtime::SyntaxNode
+    module BooleanAtom
       def value(root, symbols, current = nil)
         element = elements[1]
         return element.boolean_expression.value(root, symbols, current) if element.respond_to?(:boolean_expression)
@@ -157,25 +157,25 @@ module Siren
       end
     end
     
-    class Divmod < Treetop::Runtime::SyntaxNode
+    module Divmod
       def value(root, symbols, current = nil)
         first.value(root, symbols, current) % second.value(root, symbols, current)
       end
     end
     
-    class Product < Treetop::Runtime::SyntaxNode
+    module Product
       def value(root, symbols, current = nil)
         operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
       end
     end
     
-    class Sum < Treetop::Runtime::SyntaxNode
+    module Sum
       def value(root, symbols, current = nil)
         operator.value(first.value(root, symbols, current), second.value(root, symbols, current))
       end
     end
     
-    class Atom < Treetop::Runtime::SyntaxNode
+    module Atom
       def value(root, symbols, current = nil)
         element = elements[1]
         return element.expression.value(root, symbols, current) if element.respond_to?(:expression)
@@ -183,19 +183,19 @@ module Siren
       end
     end
     
-    class Multiplication < Treetop::Runtime::SyntaxNode
+    module Multiplication
       def value(expr1, expr2)
         expr1 * expr2
       end
     end
     
-    class Division < Treetop::Runtime::SyntaxNode
+    module Division
       def value(expr1, expr2)
         expr1 / expr2
       end
     end
     
-    class Addition < Treetop::Runtime::SyntaxNode
+    module Addition
       def value(expr1, expr2)
         String === expr1 || String === expr2 ?
             expr1.to_s + expr2.to_s :
@@ -203,7 +203,7 @@ module Siren
       end
     end
     
-    class Subtraction < Treetop::Runtime::SyntaxNode
+    module Subtraction
       def value(expr1, expr2)
         expr1 - expr2
       end
@@ -212,49 +212,49 @@ module Siren
     module Comparator
     end
     
-    class Equal < Treetop::Runtime::SyntaxNode
+    module Equal
       def value(expr1, expr2)
         expr1 == expr2
       end
     end
     
-    class NotEqual < Treetop::Runtime::SyntaxNode
+    module NotEqual
       def value(expr1, expr2)
         expr1 != expr2
       end
     end
     
-    class LessThan < Treetop::Runtime::SyntaxNode
+    module LessThan
       def value(expr1, expr2)
         expr1 < expr2
       end
     end
     
-    class LessThanOrEqual < Treetop::Runtime::SyntaxNode
+    module LessThanOrEqual
       def value(expr1, expr2)
         expr1 <= expr2
       end
     end
     
-    class GreaterThan < Treetop::Runtime::SyntaxNode
+    module GreaterThan
       def value(expr1, expr2)
         expr1 > expr2
       end
     end
     
-    class GreaterThanOrEqual < Treetop::Runtime::SyntaxNode
+    module GreaterThanOrEqual
       def value(expr1, expr2)
         expr1 >= expr2
       end
     end
     
-    class String < Treetop::Runtime::SyntaxNode
+    module String
       def value(root, symbols, current = nil)
         @value ||= eval(text_value)
       end
     end
     
-    class Number < Treetop::Runtime::SyntaxNode
+    module Number
       def value(root, symbols, current = nil)
         @value ||= eval(text_value)
       end
@@ -266,19 +266,19 @@ module Siren
       end
     end
     
-    class True < Treetop::Runtime::SyntaxNode
+    module True
       def value(root, symbols, current = nil)
         true
       end
     end
     
-    class False < Treetop::Runtime::SyntaxNode
+    module False
       def value(root, symbols, current = nil)
         false
       end
     end
     
-    class Null < Treetop::Runtime::SyntaxNode
+    module Null
       def value(root, symbols, current = nil)
         nil
       end
