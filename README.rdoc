@@ -147,10 +147,11 @@ operators are supported:
 === Field access filter
 
 A field access filter selects a named field from an object. Fields are accessed using the
-dot notation, or the bracket notation with an expression evaluating to a string. This
-filter does one of the following based on the object's type:
+dot notation, or the bracket notation with an expression evaluating to a string or an integer.
+This filter does one of the following based on the object's type:
 
 * If the object is a +Hash+, the value for the named key is produced.
+* If the object is an +Array+, the value at the given index is produced.
 * If the object has the named method, the value of that method call is returned.
 * Otherwise, the value of the named instance variable is produced.
 
@@ -161,6 +162,9 @@ filter does one of the following based on the object's type:
     
     Siren.query "$.key", data
     #=> "foo"
+    
+    Siren.query "$[1]", %w[foo bar whizz]
+    #=> "bar"
     
     Siren.query "$.name[ $.key ]", data
     #=> "bar"
