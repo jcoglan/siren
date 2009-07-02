@@ -38,7 +38,8 @@ module Siren
     
     module SliceAccess
       def value(object, root, symbols, current = nil)
-        a, b, s = *[head, tail, step].map { |x| x.value(root, symbols, current) }
+        a, b = *[head, tail].map { |x| x.value(root, symbols, current) }
+        s = step.respond_to?(:number) ? step.number.value(root, symbols, current) : 1
         result = []
         while a <= b
           result << object[a]

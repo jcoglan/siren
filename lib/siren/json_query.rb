@@ -1714,6 +1714,12 @@ module Siren
     end
 
     module SliceAccess0
+      def number
+        elements[1]
+      end
+    end
+
+    module SliceAccess1
       def head
         elements[1]
       end
@@ -1723,7 +1729,7 @@ module Siren
       end
 
       def step
-        elements[5]
+        elements[4]
       end
 
     end
@@ -1761,27 +1767,41 @@ module Siren
             r4 = _nt_number
             s0 << r4
             if r4
+              i6, s6 = index, []
               if input.index(":", index) == index
-                r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
                 @index += 1
               else
                 terminal_parse_failure(":")
-                r5 = nil
+                r7 = nil
+              end
+              s6 << r7
+              if r7
+                r8 = _nt_number
+                s6 << r8
+              end
+              if s6.last
+                r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+                r6.extend(SliceAccess0)
+              else
+                self.index = i6
+                r6 = nil
+              end
+              if r6
+                r5 = r6
+              else
+                r5 = instantiate_node(SyntaxNode,input, index...index)
               end
               s0 << r5
               if r5
-                r6 = _nt_number
-                s0 << r6
-                if r6
-                  if input.index("]", index) == index
-                    r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
-                  else
-                    terminal_parse_failure("]")
-                    r7 = nil
-                  end
-                  s0 << r7
+                if input.index("]", index) == index
+                  r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                  @index += 1
+                else
+                  terminal_parse_failure("]")
+                  r9 = nil
                 end
+                s0 << r9
               end
             end
           end
@@ -1789,7 +1809,7 @@ module Siren
       end
       if s0.last
         r0 = instantiate_node(SliceAccess,input, i0...index, s0)
-        r0.extend(SliceAccess0)
+        r0.extend(SliceAccess1)
       else
         self.index = i0
         r0 = nil

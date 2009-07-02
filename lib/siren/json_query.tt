@@ -141,7 +141,7 @@ module Siren
     end
     
     rule slice_access
-      "[" head:number ":" tail:number ":" step:number "]" <SliceAccess>
+      "[" head:number ":" tail:number step:(":" number)? "]" <SliceAccess>
     end
     
     rule field_access
