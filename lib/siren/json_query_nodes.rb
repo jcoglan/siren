@@ -49,6 +49,33 @@ module Siren
       end
     end
     
+    module RecursiveAccess
+      def value(object, root, symbols, current = nil)
+        name = elements[1].text_value
+        results, visited = [], []
+        
+        visitor = lambda do |visitee|
+          each(visitee) do |index, value|
+            next if visited.include?(value)
+            visited << value
+            results << value if index == name
+            visitor.call(value)
+          end
+        end
+        
+        visitor.call(object)
+        results
+      end
+      
+      def each(object)
+        case object
+        when Array then object.each_with_index { |x,i| yield(i,x) }
+        when Hash  then object.each { |k,v| yield(k,v) }
+        else nil
+        end
+      end
+    end
+    
     module FieldAccess
       def index(object, root, symbols, current = nil)
         element = elements[1]

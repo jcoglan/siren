@@ -1680,28 +1680,34 @@ module Siren
         r0 = r1
         r0.extend(Filter)
       else
-        r2 = _nt_field_access
+        r2 = _nt_recursive_access
         if r2
           r0 = r2
           r0.extend(Filter)
         else
-          r3 = _nt_boolean_filter
+          r3 = _nt_field_access
           if r3
             r0 = r3
             r0.extend(Filter)
           else
-            r4 = _nt_map_filter
+            r4 = _nt_boolean_filter
             if r4
               r0 = r4
               r0.extend(Filter)
             else
-              r5 = _nt_sort_filter
+              r5 = _nt_map_filter
               if r5
                 r0 = r5
                 r0.extend(Filter)
               else
-                self.index = i0
-                r0 = nil
+                r6 = _nt_sort_filter
+                if r6
+                  r0 = r6
+                  r0.extend(Filter)
+                else
+                  self.index = i0
+                  r0 = nil
+                end
               end
             end
           end
@@ -1816,6 +1822,46 @@ module Siren
       end
 
       node_cache[:slice_access][start_index] = r0
+
+      return r0
+    end
+
+    module RecursiveAccess0
+      def symbol
+        elements[1]
+      end
+    end
+
+    def _nt_recursive_access
+      start_index = index
+      if node_cache[:recursive_access].has_key?(index)
+        cached = node_cache[:recursive_access][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      i0, s0 = index, []
+      if input.index("..", index) == index
+        r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
+        @index += 2
+      else
+        terminal_parse_failure("..")
+        r1 = nil
+      end
+      s0 << r1
+      if r1
+        r2 = _nt_symbol
+        s0 << r2
+      end
+      if s0.last
+        r0 = instantiate_node(RecursiveAccess,input, i0...index, s0)
+        r0.extend(RecursiveAccess0)
+      else
+        self.index = i0
+        r0 = nil
+      end
+
+      node_cache[:recursive_access][start_index] = r0
 
       return r0
     end

@@ -172,6 +172,14 @@ This filter does one of the following based on the object's type:
     Siren.query "$.size", [3,4,5]
     #=> 3
 
+Fields can also be accessed recursively; the syntax <tt>..symbol</tt> returns an array
+of all the values in the object with the property name +symbol+.
+
+  data = {"rec" => 6, "key" => {"rec" => 7}}
+  
+  Siren.query "$..rec", data
+  #=> [6, 7]
+
 
 === Array slice filter
 

@@ -137,11 +137,15 @@ module Siren
     end
     
     rule filter
-      (slice_access / field_access / boolean_filter / map_filter / sort_filter) <Filter>
+      (slice_access / recursive_access / field_access / boolean_filter / map_filter / sort_filter) <Filter>
     end
     
     rule slice_access
       "[" head:number ":" tail:number step:(":" number)? "]" <SliceAccess>
+    end
+    
+    rule recursive_access
+      ".." symbol <RecursiveAccess>
     end
     
     rule field_access

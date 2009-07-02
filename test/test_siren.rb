@@ -78,9 +78,16 @@ class SirenTest < Test::Unit::TestCase
   
   def test_field_access
     assert_equal "FOO", Siren.query("$.upcase", "foo")
-    assert_equal 99, Siren.query("$['key']", {"key" => 99})
-    assert_equal 4, Siren.query("$.values[$.key]", {"key" => 2, "values" => [3,9,4,6]})
-    assert_equal 6, Siren.query("$['foo']", {'foo' => 6})
+    assert_equal 99,    Siren.query("$['key']", {"key" => 99})
+    assert_equal 4,     Siren.query("$.values[$.key]", {"key" => 2, "values" => [3,9,4,6]})
+    assert_equal 6,     Siren.query("$['foo']", {'foo' => 6})
+    assert_equal [4,5], Siren.query("$[ 'foo', 'bar' ]", {'foo' => 4, 'bar' => 5})
+    
+    doc = Siren.parse <<-JSON
+      {"id": "recursor", "rec": 6, "hmm": {"rec": 7}, "backref": {"$ref": "recursor"}}
+    JSON
+    
+    assert_equal [6,7], Siren.query("$..rec", doc)
   end
   
   def test_array_filters
