@@ -52,12 +52,11 @@ module Siren
     module RecursiveAccess
       def value(object, root, symbols, current = nil)
         name = elements[1].text_value
-        results, visited = [], []
+        results, visited = [], Set.new
         
         visitor = lambda do |visitee|
-          each(visitee) do |index, value|
-            next if visited.include?(value)
-            visited << value
+          return unless visited.add?(visitee)
+          Siren.each(visitee) do |index, value|
             results << value if index == name
             visitor.call(value)
           end
@@ -65,14 +64,6 @@ module Siren
         
         visitor.call(object)
         results
-      end
-      
-      def each(object)
-        case object
-        when Array then object.each_with_index { |x,i| yield(i,x) }
-        when Hash  then object.each { |k,v| yield(k,v) }
-        else nil
-        end
       end
     end
     
@@ -119,9 +110,21 @@ module Siren
     
     module BooleanFilter
       def value(list, root, symbols, current = nil)
-        list.select do |object|
-          boolean_expression.value(root, symbols, object)
+        results, visited = [], Set.new
+        
+        visitor = lambda do |visitee|
+          return unless visited.add?(visitee)
+          Siren.each(visitee) do |index, value|
+            begin
+              results << value if boolean_expression.value(root, symbols, value)
+            rescue
+            end
+            visitor.call(value) if recursive.text_value == '..'
+          end
         end
+        
+        visitor.call(list)
+        results
       end
     end
     

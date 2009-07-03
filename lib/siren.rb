@@ -1,3 +1,4 @@
+require 'set'
 require 'rubygems'
 require 'treetop'
 require 'eventful'
@@ -17,6 +18,15 @@ module Siren
   
   class JsonParser
     include Siren::Walker
+  end
+  
+  def self.each(object, &block)
+    case object
+    when Array      then object.each_with_index { |x,i| yield(i,x) }
+    when Hash       then object.each { |k,v| yield(k,v) }
+    when Enumerable then each(object.to_a, &block)
+    else nil
+    end
   end
   
   def self.parse(string, &block)

@@ -161,7 +161,7 @@ module Siren
     end
     
     rule boolean_filter
-      "[?" boolean_expression "]" <BooleanFilter>
+      recursive:".."? "[?" boolean_expression "]" <BooleanFilter>
     end
     
     rule map_filter

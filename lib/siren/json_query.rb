@@ -2067,8 +2067,12 @@ module Siren
     end
 
     module BooleanFilter0
+      def recursive
+        elements[0]
+      end
+
       def boolean_expression
-        elements[1]
+        elements[2]
       end
 
     end
@@ -2082,26 +2086,41 @@ module Siren
       end
 
       i0, s0 = index, []
-      if input.index("[?", index) == index
-        r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
+      if input.index("..", index) == index
+        r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
         @index += 2
       else
-        terminal_parse_failure("[?")
-        r1 = nil
+        terminal_parse_failure("..")
+        r2 = nil
+      end
+      if r2
+        r1 = r2
+      else
+        r1 = instantiate_node(SyntaxNode,input, index...index)
       end
       s0 << r1
       if r1
-        r2 = _nt_boolean_expression
-        s0 << r2
-        if r2
-          if input.index("]", index) == index
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure("]")
-            r3 = nil
+        if input.index("[?", index) == index
+          r3 = instantiate_node(SyntaxNode,input, index...(index + 2))
+          @index += 2
+        else
+          terminal_parse_failure("[?")
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          r4 = _nt_boolean_expression
+          s0 << r4
+          if r4
+            if input.index("]", index) == index
+              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure("]")
+              r5 = nil
+            end
+            s0 << r5
           end
-          s0 << r3
         end
       end
       if s0.last

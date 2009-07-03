@@ -203,6 +203,22 @@ refers to each member of the array in turn. For example:
   Siren.query "$[? @ > 2 & @ <= 5]", [9,2,7,3,8,5]
   #=> [3, 5]
 
+Selections can be made recursively by prefixing the filter with two dots (<tt>..</tt>).
+This will search the filtered object recursively for any properties that match the
+predicate expression, and return them as a flat array.
+
+  data = [
+      8,2,5,7,3,
+      {
+          'foo' => 12,
+          'bar' => 7,
+          'whizz' => [9,2,6,4]
+      }
+  ]
+  
+  Siren.query "$..[? @ % 4 = 0]", data
+  #=> [8, 4 ,12]
+
 
 === Mapping filter
 

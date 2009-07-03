@@ -13,7 +13,7 @@ module Siren
       walker = lambda do |holder, key|
         value = holder[key]
         
-        for_each = lambda do |k, val|
+        Siren.each(value) do |k, val|
           v = walker.call(value, k)
           if v.nil?
             holder.delete(k)
@@ -21,9 +21,6 @@ module Siren
             value[k] = v
           end
         end
-        
-        value.each { |k,v| for_each.call(k,v) } if Hash === value
-        value.each_with_index { |v,i| for_each.call(i,v) } if Array === value
         
         reviver.call(holder, key, value)
       end
