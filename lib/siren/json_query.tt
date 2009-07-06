@@ -57,11 +57,15 @@ module Siren
     end
     
     rule comparator
-      (not_equal / lte / gte / equal / lt / gt) <Comparator>
+      (not_equal / lte / gte / equal / match / lt / gt) <Comparator>
     end
     
     rule equal
       "=" <Equal>
+    end
+    
+    rule match
+      "~" <Match>
     end
     
     rule not_equal

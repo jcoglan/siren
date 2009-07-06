@@ -771,18 +771,24 @@ module Siren
               r0 = r4
               r0.extend(Comparator)
             else
-              r5 = _nt_lt
+              r5 = _nt_match
               if r5
                 r0 = r5
                 r0.extend(Comparator)
               else
-                r6 = _nt_gt
+                r6 = _nt_lt
                 if r6
                   r0 = r6
                   r0.extend(Comparator)
                 else
-                  self.index = i0
-                  r0 = nil
+                  r7 = _nt_gt
+                  if r7
+                    r0 = r7
+                    r0.extend(Comparator)
+                  else
+                    self.index = i0
+                    r0 = nil
+                  end
                 end
               end
             end
@@ -812,6 +818,27 @@ module Siren
       end
 
       node_cache[:equal][start_index] = r0
+
+      return r0
+    end
+
+    def _nt_match
+      start_index = index
+      if node_cache[:match].has_key?(index)
+        cached = node_cache[:match][index]
+        @index = cached.interval.end if cached
+        return cached
+      end
+
+      if input.index("~", index) == index
+        r0 = instantiate_node(Match,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure("~")
+        r0 = nil
+      end
+
+      node_cache[:match][start_index] = r0
 
       return r0
     end

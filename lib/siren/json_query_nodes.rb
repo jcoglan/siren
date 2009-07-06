@@ -245,7 +245,17 @@ module Siren
     
     module Equal
       def value(expr1, expr2)
-        expr1 == expr2
+        return expr1 == expr2 unless expr2.respond_to?(:gsub)
+        expr2 = expr2.gsub('*', '.*').gsub('?', '.')
+        expr1 =~ %r{^#{expr2}$}
+      end
+    end
+    
+    module Match
+      def value(expr1, expr2)
+        return expr1 == expr2 unless expr2.respond_to?(:gsub)
+        expr2 = expr2.gsub('*', '.*').gsub('?', '.')
+        expr1 =~ %r{^#{expr2}$}i
       end
     end
     

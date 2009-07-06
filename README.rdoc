@@ -140,8 +140,25 @@ operators are supported:
 * Arithmetic: <tt>+</tt>, <tt>-</tt>, <tt>*</tt>, <tt>/</tt>, <tt>%</tt>
 * Comparison: <tt><</tt>, <tt><=</tt>, <tt>></tt>, <tt>>=</tt>
 * Equality: <tt>=</tt> for equality, <tt>!=</tt> for inequality
+* String matching: <tt>=</tt> for case-sensitive matching, <tt>~</tt> for case-insensitive
 * Logic: <tt>&</tt> for boolean AND, <tt>|</tt> boolean OR (not bitwise)
 * Subexpressions are delimited using parentheses <tt>(</tt> and <tt>)</tt>
+
+
+=== String matching
+
+The <tt>=</tt> and <tt>~</tt> operators, when used with strings, perform case-sensitive
+and case-insensitive matching respectively. Within a string, <tt>*</tt> matches zero or
+more characters of any type, and <tt>?</tt> matches a single character.
+
+  Siren.query "$[? @ = 'b*']", %w[foo bar baz]
+  #=> ["bar", "baz"]
+  
+  Siren.query "$[? @ = 'b?']", %w[foo bar baz]
+  #=> []
+  
+  Siren.query "$[? @ ~ 'BA?']", %w[foo bar baz]
+  #=> ["bar", "baz"]
 
 
 === Field access filter
@@ -217,7 +234,7 @@ predicate expression, and return them as a flat array.
   ]
   
   Siren.query "$..[? @ % 4 = 0]", data
-  #=> [8, 4 ,12]
+  #=> [8, 4, 12]
 
 
 === Mapping filter
