@@ -7,6 +7,11 @@ of JSON-to-Ruby processing with cross-references, automatic typecasting,
 and a succinct query language for filtering JSON and Ruby object graphs.
 
 
+== Installation
+
+  sudo gem install siren
+
+
 == Usage
 
 As expected, Siren can be used as a basic JSON parser, though if that's all you
@@ -285,11 +290,6 @@ name for people with the same last name:
   #       { "last"=>"O'Brien",    "first"=>"Ed"},
   #       { "last"=>"Selway",     "first"=>"Phil"},
   #       { "last"=>"Yorke",      "first"=>"Thom"} ]
-
-
-== Install
-
-  sudo gem install siren
 
 
 == License
