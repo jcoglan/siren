@@ -129,7 +129,7 @@ class SirenTest < Test::Unit::TestCase
         {:key => [9,5,7], :val => 1..8})
   end
   
-  def test_wildcards
+  def test_string_matching
     assert_equal ["Sayings of the Century", "The Lord of the Rings"],
         Siren.query("$.store.book[? @.title = '* of the *'][= title]", fixtures(:store))
     
@@ -144,6 +144,8 @@ class SirenTest < Test::Unit::TestCase
         
     assert_equal [],
         Siren.query("$.store.book[? @.title = '? of the ?'][= title]", fixtures(:store))
+    
+    assert_equal '302 [QSA,L]', Siren.query("$[? @ = '302 [QSA,L]'][0]", ['302 [QSA,L]'])
   end
   
   def test_bookstore
