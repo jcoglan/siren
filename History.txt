@@ -1,4 +1,4 @@
-=== 0.2.0 / 2009-07-TODO
+=== 0.2.0 / 2009-07-07
 
 * Mostly complete implementation of JSONQuery as described
   by SitePen. This would have been 0.1 but it supercedes
